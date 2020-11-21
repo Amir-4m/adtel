@@ -1,0 +1,10 @@
+{% extends "admin/change_form.html" %}
+
+{% block object-tools-items %}
+    {% if not original.rep  %}
+    <li>
+        <a href="{% url 'admin:telegram_adv_campaigncontent_add' %}?campaign={{ original.id }}" class="btn btn-high" style="background-color:#009e73">add Content</a>
+    </li>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

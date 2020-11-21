@@ -1,0 +1,69 @@
+[
+   {
+      "model":"django_celery_beat.crontabschedule",
+      "pk":2,
+      "fields":{
+         "minute":"*/15",
+         "hour":"*",
+         "day_of_week":"*",
+         "day_of_month":"*",
+         "month_of_year":"*",
+         "timezone":"Asia/Tehran"
+
+      }
+  },
+  {
+    "model": "django_celery_beat.periodictask",
+    "pk": 5,
+    "fields": {
+      "name": "process campaigns",
+      "task": "telegram_bot.tasks.process_campaign_user",
+      "interval": null,
+      "crontab": 2,
+      "solar": null,
+      "clocked": null,
+      "args": "[]",
+      "kwargs": "{}",
+      "queue": null,
+      "exchange": null,
+      "routing_key": null,
+      "headers": "{}",
+      "priority": null,
+      "expires": null,
+      "one_off": false,
+      "start_time": "2019-10-23T05:46:59Z",
+      "enabled": true,
+      "last_run_at": "2019-11-10T14:14:18.366Z",
+      "total_run_count": 0,
+      "date_changed": "2019-11-10T14:15:18.386Z",
+      "description": ""
+    }
+  },
+  {
+    "model": "django_celery_beat.periodictask",
+    "pk": 6,
+    "fields": {
+      "name": "delete invalid campaign_users",
+      "task": "telegram_adv.tasks.delete_invalid_campaign_users",
+      "interval": null,
+      "crontab": 2,
+      "solar": null,
+      "clocked": null,
+      "args": "[]",
+      "kwargs": "{}",
+      "queue": null,
+      "exchange": null,
+      "routing_key": null,
+      "headers": "{}",
+      "priority": null,
+      "expires": null,
+      "one_off": false,
+      "start_time": "2019-10-23T05:46:59Z",
+      "enabled": true,
+      "last_run_at": "2019-11-10T14:14:18.366Z",
+      "total_run_count": 0,
+      "date_changed": "2019-11-10T14:14:18.366Z",
+      "description": ""
+    }
+  }
+]

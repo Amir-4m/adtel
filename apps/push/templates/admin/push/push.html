@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+
+{% block extrahead %}
+    {{ form.media }}
+    <link rel="stylesheet" type="text/css"
+          href="{% static "push/css/uid-manage-form.css" %}">
+
+{% endblock %}
+
+{% block content %}{{ block.super }}
+    {% if form.errors %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method='POST' action="">
+        {% csrf_token %}
+        {% for field in form %}
+            <P>
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+            </P>
+            <br/>
+            <hr><br/>
+
+        {% endfor %}
+        <input type="submit" value="Push" style="background-color: #32ba27">
+    </form>
+
+{% endblock %}

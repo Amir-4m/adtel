@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% load report_extras %}
+{% load humanize %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/x-icon" href="{% static 'reports/assets/logo/favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'reports/style.css' %}">
+    <title>گزارش آگهی</title>
+</head>
+
+<body>
+<div class="header-box">
+    <nav class="navbar navbar-light">
+        <a class="navbar-brand" href="#">
+            <img class="img-fluid" src="{% static 'reports/assets/logo/hami-logo.svg' %}" alt="Hami">
+        </a>
+    </nav>
+</div>
+<div class="container-fluid title-box">
+    <h3 class="text-center">عنوان آگهی: {{ title }}</h3>
+</div>
+<hr class="hr-line">
+<div class="container ">
+    <div class="details-box">
+        <div class="row text-center justify-content-center">
+            <div class="col-6 col-sm-3">
+                <span>وضعیت:</span>
+            </div>
+            <div class="col-6 col-sm-3">
+                <span>{{ status }}</span>
+            </div>
+        </div>
+        {% for total_content in total_contents %}
+            <div class="row text-center justify-content-center">
+                <div class="col-6 col-sm-3">
+                    <span>بازدید بنر : {{ total_content.display_text }}</span>
+                </div>
+                <div class="col-6 col-sm-3">
+                    <span>{{ total_content.views | default_if_none:0 | intcomma  }}</span>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% for partial_content in partial_contents %}
+            <div class="row text-center justify-content-center">
+                <div class="col-6 col-sm-3">
+                    <span>مجموع بازدید بنر : {{ partial_content.display_text }}</span>
+                </div>
+                <div class="col-6 col-sm-3">
+                    <span>{{ partial_content.views | intcomma }}</span>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+</div>
+<hr class="hr-line">
+<div class="container">
+    <h4 class="text-center">کانال هایی که شما را تبلیغ کرده اند.</h4>
+    <div class="excel-box">
+        <img src="{% static "reports/assets/logo/excel.png" %}" class="excel-img" alt="">
+    </div>
+
+    <div class="table-responsive table-box">
+        <table class="table text-center shadow p-3 mb-5 bg-white rounded">
+            <thead>
+            <tr>
+                <th class="d-none d-sm-block">ردیف</th>
+                <th>شناسه کانال ها</th>
+                <th class="d-none d-sm-block">عنوان کانال ها</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for campaign_user in campaign_users %}
+                <tr class="tableRow">
+                    <td class="row-count d-none d-sm-block">{{ forloop.counter }}</td>
+                    <td class="text dir-ltr">{{ campaign_user.channel_tags | replace_with_space:"," }}</td>
+                    <td class=" d-none d-sm-block">{{ campaign_user.channel_titles }}</td>
+                </tr>
+                    <tr data-toggle="collapse" class="text channel-row collapsed">
+                        <td colspan="5" class="inner-row">
+                            <div class="inner-table">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">پست</th>
+                                        <th scope="col">بازدید</th>
+                                        <th scope="col">لینک</th>
+{#                                        <th scope="col">تعداد کلیک</th>#}
+{#                                        <th scope="col">تعداد کلیک یکتا</th>#}
+                                        <th scope="col"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for post in campaign_user.campaignpost_set.all %}
+                                        <tr class="tableRow">
+                                            <td>{{ post.campaign_content.display_text }}</td>
+                                            <td>{{ post.last_views|default_if_none:"-"|intcomma }}</td>
+                                            {% if post.short_link %}
+                                                <td class="text dir-ltr"><a href="{{ post.short_link.link }}">{{ post.short_link.link }}</a></td>
+{#                                                <td>{{ post.shortlink.hit_count | default_if_none:"-" }}</td>#}
+{#                                                <td>{{ post.shortlink.ip_count | default_if_none:"-" }}</td>#}
+                                            {% else %}
+                                                <td class="text dir-ltr">-</td>
+{#                                                <td>-</td>#}
+{#                                                <td>-</td>#}
+                                            {% endif %}
+                                            {% if post.has_screen_shot %}
+                                                <td id="Identifier{{ post.id }}" onclick="getModal('{{ post.screen_shot.url }}')">
+                                                    <img src="{% static "reports/assets/logo/eye.png" %}" class="eye-img" alt="">
+                                                </td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="close_btn">&times;</span>
+        <img class="img-fluid" id="contentImage" src="" alt="">
+    </div>
+</div>
+<script src="{% static "reports/assets/jquery.min.js" %}"></script>
+<script>
+    const modal = document.getElementById("myModal");
+    const close_btn = document.getElementById("close_btn");
+
+    function getModal(img_src) {
+        modal.style.display = "block";
+        document.getElementById('contentImage').src = img_src;
+    }
+
+    close_btn.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    modal.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+{% extends "admin/change_form.html" %}
+
+{% block object-tools-items %}
+    {% if not original.rep  %}
+    <li>
+        <a href="{% url 'admin:import-files' original.id %}" class="btn btn-high" style="background-color:#009e73">import files</a>
+    </li>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

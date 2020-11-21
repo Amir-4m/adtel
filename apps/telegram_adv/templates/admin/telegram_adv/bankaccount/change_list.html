@@ -1,0 +1,10 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools-items %}
+    {% if not original.rep  %}
+    <li>
+        <a href="{% url 'admin:exchange_sheba' %}" class="btn btn-high" style="background-color:#009e73">Exchange Sheba</a>
+    </li>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

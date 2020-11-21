@@ -1,0 +1,182 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 10,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$c3Zzb6rWuScl$t4BlQH0De2/pi7llovBu4I0hO/4vjMhth8UuRc0JZlQ=",
+      "last_login": "2020-07-21T05:32:56.831Z",
+      "is_superuser": true,
+      "username": "mujad",
+      "first_name": "",
+      "last_name": "",
+      "email": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2020-04-29T12:16:00.670Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "telegram_adv.TelegramAgent",
+    "pk": 1,
+    "fields": {
+      "created_time": "2019-10-15T05:42:49.757Z",
+      "updated_time": "2019-10-15T05:42:49.757Z",
+      "bot_name": "admood",
+      "bot_token": "kjfadskjfh938ruAHFG8732YLHAF",
+      "specific_mark": "#admood"
+    }
+  },
+  {
+    "model": "telegram_adv.Campaign",
+    "pk": 1,
+    "fields": {
+      "created_time": "2019-10-15T05:42:49.757Z",
+      "updated_time": "2019-10-15T05:42:49.757Z",
+      "title": "hi how are you",
+      "start_datetime": "2019-10-15T05:42:49.757Z",
+      "end_datetime": "2019-10-15T05:42:49.757Z",
+      "max_view": 60000,
+      "receiver_agents": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "telegram_user.TelegramUser",
+    "pk": 1,
+    "fields": {
+      "created_time": "2019-10-15T05:42:49.757Z",
+      "updated_time": "2019-10-15T05:42:49.757Z",
+      "user_id": 47846668
+    }
+  },
+  {
+    "model": "telegram_adv.ReceiverChannel",
+    "pk": 1,
+    "fields": {
+      "created_time": "2019-10-15T05:42:49.757Z",
+      "updated_time": "2019-10-15T05:42:49.757Z",
+      "title": "digikala",
+      "tag": "@digikala"
+    }
+  },
+  {
+    "model": "telegram_adv.campaigncontent",
+    "pk": 1,
+    "fields": {
+      "created_time": "2020-04-22T06:32:44.108Z",
+      "updated_time": "2020-04-22T06:32:44.108Z",
+      "display_text": "بنر اصلی",
+      "content": "\u0645\u062a\u0646",
+      "extra_data": {},
+      "view_type": "total",
+      "message_id": 115,
+      "is_sticker": false,
+      "campaign": 1,
+      "mother_channel": 1
+    }
+  },
+  {
+    "model": "telegram_adv.receiverchannel",
+    "pk": 2,
+    "fields": {
+      "created_time": "2019-10-31T09:37:54.630Z",
+      "updated_time": "2019-12-07T10:08:42.654Z",
+      "title": "\u0641\u0627\u0644 \u0631\u0648\u0632\u0627\u0646\u0647",
+      "tag": "",
+      "chat_id": -1001203051065
+    }
+  },
+  {
+    "model": "telegram_adv.receiverchannel",
+    "pk": 3,
+    "fields": {
+      "created_time": "2019-12-07T11:47:42.253Z",
+      "updated_time": "2020-04-20T21:20:50.184Z",
+      "title": "\u062e\u0628\u0631 \u0648\u06cc\u0698\u0647",
+      "tag": "",
+      "chat_id": -1001203051365
+    }
+  },
+  {
+    "model": "telegram_adv.bankaccount",
+    "pk": 1,
+    "fields": {
+      "created_time": "2020-02-18T10:35:06.603Z",
+      "updated_time": "2020-04-09T17:45:39.879Z",
+      "sheba_number": "IR800170000000346979480003",
+      "sheba_owner": "\u0627\u062d\u0633\u0627\u0646 \u0645"
+    }
+  },
+  {
+    "model": "telegram_adv.telegramchannel",
+    "pk": 1,
+    "fields": {
+      "created_time": "2019-10-31T09:02:49.009Z",
+      "updated_time": "2019-10-31T09:02:49.009Z",
+      "tag": "@testapp",
+      "title": "\u062a\u0633\u062a",
+      "channel_id": -1001203051325,
+      "member_no": 200,
+      "sheba": 1,
+      "admins": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "telegram_adv.telegramchannel",
+    "pk": 2,
+    "fields": {
+      "created_time": "2019-11-27T14:17:04.405Z",
+      "updated_time": "2020-01-14T08:10:42.583Z",
+      "tag": "@khande_vone",
+      "title": "? \u062e\u0646\u062f\u0648\u0627\u0646\u0647 ?",
+      "channel_id": -1001203052365,
+      "member_no": 150502,
+      "sheba": 1,
+      "admins": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "telegram_adv.Campaign",
+    "pk": 1,
+    "fields": {
+      "created_time": "2019-10-15T05:42:49.757Z",
+      "updated_time": "2019-10-15T05:42:49.757Z",
+      "start_datetime": "2019-10-15T05:42:49.757Z",
+      "end_datetime": "2019-10-15T05:42:49.757Z",
+      "status": "test",
+      "max_view": 20000,
+      "is_enable": true,
+      "receiver_agents": [1]
+    }
+  },
+  {
+    "model": "telegram_adv.CampaignPublisher",
+    "pk": 1,
+    "fields": {
+      "created_time": "2019-10-15T05:42:49.757Z",
+      "campaign": 1,
+      "publisher": 1,
+      "tariff": 3500
+    }
+  },
+  {
+    "model": "telegram_adv.CampaignContent",
+    "pk": 1,
+    "fields": {
+      "created_time": "2019-10-15T05:42:49.757Z",
+      "updated_time": "2019-10-15T05:42:49.757Z",
+      "display_text": "2019-10-15T05:42:49.757Z",
+      "content": "hi this is test content \n\nhttps://google.com",
+      "view_type": "partial",
+      "mother_channel": 3,
+      "campaign": 1
+    }
+  }
+]

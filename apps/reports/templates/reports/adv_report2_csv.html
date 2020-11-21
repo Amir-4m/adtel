@@ -1,0 +1,2 @@
+{% load report_extras %}{% for log in logs %}"{{ log.get_channel_tags|replace_with_space:"," }}","{{ log.get_channel_titles }}","{{ log.banner_views }}","{{ log.appended_message_views }}","{{ log.description|default_if_none:"-" }}"
+{% endfor %}

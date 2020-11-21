@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% load humanize %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/x-icon" href="{% static "reports/assets/logo/favicon.ico" %}">
+    <link rel="stylesheet" href="{% static "reports/financial_css.css" %}">
+    <title>گزارش مالی</title>
+</head>
+
+<body>
+<div class="header-box">
+    <nav class="navbar navbar-light">
+        <a class="navbar-brand" href="#">
+            <img class="img-fluid" src="{% static "reports/assets/logo/hami-logo.svg" %}" alt="hami-logo">
+        </a>
+    </nav>
+</div>
+
+<div class="container-fluid title-box">
+    <!-- <h2 class="text-center">Title</h2> -->
+    <h3 class="text-center">آخرین گزارشات مالی شما</h3>
+</div>
+<div class="container table-box table-responsive">
+
+    <table class="table main-table  text-center shadow p-3 mb-5 bg-white" style="border-collapse:collapse;">
+        <thead>
+        <tr class="tableRow text">
+            <th scope="col">عنوان</th>
+            <th scope="col">زمان دریافت</th>
+            <th scope="col">مبلغ پرداختی</th>
+            <th scope="col">تاریخ واریز</th>
+            <th scope="col">کد رهگیری</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for campaign_user in campaign_users %}
+            <tr data-toggle="collapse" class="accordion-toggle text border-blue">
+                <td class="row-count text">{{ campaign_user.campaign.text_display }}</td>
+                <td class="row-count text">{{ campaign_user.get_jalali_created_time }}</td>
+                <td class="row-count text">{{ campaign_user.receipt_price|default_if_none:"-"|intcomma  }}</td>
+                <td class="row-count text">{{ campaign_user.get_jalali_receipt_date }}</td>
+                <td class="row-count text">{{ campaign_user.receipt_code|default:"-" }}</td>
+            </tr>
+            <!-- comment -->
+            <tr data-toggle="collapse" onclick="rotateArrowImg('demo{{ campaign_user.id }}')" data-target="#demo{{ campaign_user.id }}"
+                class="accordion-toggle  text channel-row">
+                <td colspan="6">
+                    <span class="channel-txt">کانال ها :</span>
+                    <span>{{ campaign_user.channel_tags }}</span>
+
+                    <img src="{% static "reports/assets/logo/arrow.png" %}" class="img-fluid arrow-img demo{{ campaign_user.id }} arrow-0deg" alt="">
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="5" class="hiddenRow">
+                    <div class="accordian-body collapse" id="demo{{ campaign_user.id }}">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">بنر</th>
+                                <th scope="col">بازدید</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for post in campaign_user.campaignpost_set.all %}
+                            <tr>
+                                <td>{{ post.campaign_content.display_text }}</td>
+                                <td>{{ post.views|default:"-"|intcomma  }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- comment -->
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+<script src="{% static "reports/assets/jquery.min.js" %}"></script>
+<script src="{% static "reports/assets/bootstrap.min.js" %}"></script>
+<script>
+    $('.accordian-body').on('show.bs.collapse', function () {
+        $(this).closest("table")
+            .find(".collapse.in")
+            .not(this)
+    })
+
+    function rotateArrowImg(imgClass) {
+        if ($("."+imgClass).hasClass('arrow-0deg')) {
+            $(`.${imgClass}`).removeClass('arrow-0deg').addClass('arrow-180deg')
+        } else if ($(`.${imgClass}`).hasClass('arrow-180deg')) {
+            $(`.${imgClass}`).removeClass('arrow-180deg').addClass('arrow-0deg')
+        }
+    }
+</script>
+</body>
+
+</html>

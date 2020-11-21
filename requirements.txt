@@ -1,0 +1,23 @@
+requests~=2.23.0
+python-memcached
+Pysocks
+Khayyam~=3.0.17
+persian~=0.4.0
+pandas
+
+Django>=2.2, <2.3
+djangorestframework>=3.9, <4.0
+coreapi
+
+celery>=4.3, <4.4
+
+django-admin-list-filter-dropdown==1.0.2
+django-livefield==3.2.1
+django-markdownx==2.0.28
+
+python-telegram-bot==11.1.0
+Telethon==1.11.3
+
+python-decouple==3.3
+sentry-sdk==0.19.1
+jsonschema

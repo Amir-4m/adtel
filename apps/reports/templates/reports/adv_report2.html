@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+{% load report_extras %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/x-icon" href="{% static 'reports/assets/logo/favicon.ico' %}">
+    <title>گزارش</title>
+    <link rel="stylesheet" href="{% static 'reports/style.css' %}">
+</head>
+
+<body>
+<div class="header-box">
+    <nav class="navbar navbar-light">
+        <a class="navbar-brand" href="#">
+            <img class="img-fluid" src="{% static 'reports/assets/logo/hami-logo.svg' %}" alt="Hami">
+        </a>
+    </nav>
+</div>
+<div class="container-fluid title-box">
+    <h3 class="text-center">عنوان آگهی: {{ title }}</h3>
+</div>
+<hr class="hr-line">
+<div class="container details-box">
+    <div class="row text-center justify-content-center">
+        <div class="col-6 col-sm-3">
+            <h6>وضعیت:</h6>
+        </div>
+        <div class="col-6 col-sm-3">
+            <span>{{ status }}</span>
+        </div>
+    </div>
+    <div class="row text-center justify-content-center">
+        <div class="col-6 col-sm-3">
+            <h6>بازدید بنر ۱:</h6>
+        </div>
+        <div class="col-6 col-sm-3">
+            <span>{{ total_banner_views }}</span>
+        </div>
+    </div>
+    <div class="row text-center justify-content-center">
+        <div class="col-6 col-sm-3">
+            <h6>بازدید بنر ۲:</h6>
+        </div>
+        <div class="col-6 col-sm-3">
+            <span>{{ total_appended_views }}</span>
+        </div>
+    </div>
+</div>
+<hr class="hr-line">
+<div class="container table-box table-responsive">
+    <table class="table text-center shadow p-3 mb-5 bg-white rounded">
+        <a href="?csv=true"><img src="https://cdn3.iconfinder.com/data/icons/document-icons-2/30/647702-excel-512.png" height="24" style="float: left" /></a>
+        <h6 class="text-center">کانال هایی که شما را تبلیغ کرده اند.</h6>
+        <thead>
+        <tr>
+            <th class="d-none d-sm-block">ردیف</th>
+            <th>شناسه کانال</th>
+            <th>عنوان کانال</th>
+            <th>بازدید بنر ۱</th>
+            <th>بازدید بنر ۲</th>
+            <th>لینک</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for log in logs %}
+            <tr class="tableRow" id="Identifier{{ log.id }}"{% if log.has_screen_shot %}
+                onclick="getModal('{{ log.screen_shot.url }}')"{% endif %}>
+                <td class="row-count d-none d-sm-block">{{ forloop.counter }}</td>
+                <td class="dir-ltr">{{ log.get_channel_tags|replace_with_space:"," }}</td>
+                <td class="text">{{ log.get_channel_titles }}</td>
+                <td class="view-count">{{ log.banner_views }}</td>
+                <td class="view-count">{{ log.appended_message_views }}</td>
+                <td class="view-count">{{ log.description|default_if_none:"-" }}</td>
+                <td>{% if log.has_screen_shot %}
+                    <img src="{% static "reports/assets/logo/eye.png" %}" class="eye-img" alt="">
+                {% endif %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div id="myModal" class="modal">
+
+    <div class="modal-content">
+        <span class="close" id="close_btn">&times;</span>
+        <img class="img-fluid" id="contentImage" src="" alt="">
+    </div>
+
+</div>
+<script src="{% static "reports/assets/jquery.min.js" %}"></script>
+<script>
+    const modal = document.getElementById("myModal");
+    const close_btn = document.getElementById("close_btn");
+
+    function getModal(img_src) {
+        modal.style.display = "block";
+        document.getElementById('contentImage').src = img_src;
+    }
+
+    close_btn.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    modal.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+</body>
+
+</html>

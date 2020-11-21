@@ -1,0 +1,733 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-01-28 18:29+0330\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: push/forms.py:32
+msgid "All Admins"
+msgstr ""
+
+#: push/forms.py:33
+msgid "Admins with Channels"
+msgstr ""
+
+#: push/forms.py:34
+msgid "Admin without Channels"
+msgstr ""
+
+#: push/forms.py:38 push/forms.py:109
+msgid "agent_list"
+msgstr ""
+
+#: push/forms.py:40 push/forms.py:111
+msgid "agent list"
+msgstr ""
+
+#: push/forms.py:43
+msgid "admins chooser"
+msgstr ""
+
+#: push/forms.py:49
+msgid "admin_list"
+msgstr ""
+
+#: push/forms.py:51
+msgid "admin list"
+msgstr ""
+
+#: push/forms.py:56 push/forms.py:121 telegram_bot/buttons.py:11
+#: telegram_bot/telegrambot.py:94 telegram_bot/telegrambot.py:565
+msgid "channel list"
+msgstr "لیست کانال ها 📋"
+
+#: push/forms.py:60 push/forms.py:125
+msgid "category_list"
+msgstr ""
+
+#: push/forms.py:62 push/forms.py:127
+msgid "category list"
+msgstr ""
+
+#: push/forms.py:66
+msgid "channels status list"
+msgstr ""
+
+#: push/forms.py:74
+msgid "adv_owner_list"
+msgstr ""
+
+#: push/forms.py:76
+msgid "adv owner list"
+msgstr ""
+
+#: push/forms.py:104
+msgid "All channels"
+msgstr ""
+
+#: push/forms.py:114
+msgid "channels chooser"
+msgstr ""
+
+#: push/models.py:9 push/models.py:40 push/models.py:53
+#: telegram_adv/models.py:20 telegram_adv/models.py:39
+#: telegram_adv/models.py:64 telegram_adv/models.py:103
+#: telegram_adv/models.py:129 telegram_adv/models.py:171
+#: telegram_adv/models.py:404 telegram_adv/models.py:426
+#: telegram_adv/models.py:447 telegram_adv/models.py:463
+#: telegram_bot/models.py:49 telegram_user/models.py:8
+msgid "creation time"
+msgstr ""
+
+#: push/models.py:10 telegram_adv/models.py:21 telegram_adv/models.py:40
+#: telegram_adv/models.py:65 telegram_adv/models.py:104
+#: telegram_adv/models.py:130 telegram_adv/models.py:172
+#: telegram_bot/models.py:50
+msgid "update time"
+msgstr ""
+
+#: push/models.py:11 telegram_adv/models.py:105 telegram_adv/models.py:173
+msgid "title"
+msgstr ""
+
+#: push/models.py:12 telegram_bot/models.py:40 telegram_bot/models.py:57
+msgid "text"
+msgstr ""
+
+#: push/models.py:22 push/models.py:32 telegram_adv/models.py:178
+msgid "upload file"
+msgstr ""
+
+#: push/models.py:23
+msgid "message id"
+msgstr ""
+
+#: push/models.py:43 push/models.py:56
+msgid "params"
+msgstr ""
+
+#: push/templates/admin/push/change_form_with_push.html:7
+msgid "New Push"
+msgstr ""
+
+#: tel_tools/forms.py:6
+msgid "confirm code"
+msgstr ""
+
+#: tel_tools/models.py:8 telegram_adv/models.py:354
+msgid "created time"
+msgstr ""
+
+#: tel_tools/models.py:9 telegram_adv/models.py:355
+msgid "updated time"
+msgstr ""
+
+#: tel_tools/models.py:10
+msgid "name"
+msgstr ""
+
+#: tel_tools/models.py:11
+msgid "phone number"
+msgstr ""
+
+#: tel_tools/models.py:12
+msgid "API ID"
+msgstr ""
+
+#: tel_tools/models.py:13
+msgid "API Hash"
+msgstr ""
+
+#: tel_tools/models.py:14
+msgid "two-step verification code"
+msgstr ""
+
+#: tel_tools/models.py:15
+msgid "fill if you enabled two-step verification"
+msgstr ""
+
+#: tel_tools/models.py:16
+msgid "is login"
+msgstr ""
+
+#: tel_tools/tasks.py:37
+#, python-brace-format
+msgid "LOGIN CODE SENT FOR {number}"
+msgstr ""
+
+#: tel_tools/tasks.py:39
+#, python-brace-format
+msgid ""
+"LOGIN CODE NOT SENT FOR {number}\n"
+"{e}"
+msgstr ""
+
+#: tel_tools/tasks.py:54
+#, python-brace-format
+msgid ""
+"SIGN IN TO {number} FAILED\n"
+"{e}"
+msgstr ""
+
+#: tel_tools/tasks.py:57
+msgid "django admin panel enabled for this number"
+msgstr ""
+
+#: tel_tools/tasks.py:59
+#, python-brace-format
+msgid "SIGN IN TO {number} SUCCESS"
+msgstr ""
+
+#: tel_tools/templates/admin/tel_tools/telegramsession/change_form.html:7
+msgid "Resend Code"
+msgstr ""
+
+#: tel_tools/views.py:23
+msgid "please check your saved message and reload the page"
+msgstr ""
+
+#: telegram_adv/admin.py:32
+msgid "Mark selected channels as confirmed"
+msgstr ""
+
+#: telegram_adv/admin.py:113
+msgid "report url"
+msgstr ""
+
+#: telegram_adv/admin.py:280
+msgid "banner"
+msgstr ""
+
+#: telegram_adv/admin.py:284
+msgid "rep"
+msgstr ""
+
+#: telegram_adv/models.py:22
+msgid "category"
+msgstr ""
+
+#: telegram_adv/models.py:23
+msgid "is visible"
+msgstr ""
+
+#: telegram_adv/models.py:35
+msgid "incorrect sheba number"
+msgstr ""
+
+#: telegram_adv/models.py:41
+msgid "sheba"
+msgstr ""
+
+#: telegram_adv/models.py:42 telegram_adv/models.py:368
+msgid "sheba owner"
+msgstr ""
+
+#: telegram_adv/models.py:58
+msgid "confirmed"
+msgstr ""
+
+#: telegram_adv/models.py:59
+msgid "wait to confirm"
+msgstr ""
+
+#: telegram_adv/models.py:60
+msgid "temporary blocked"
+msgstr ""
+
+#: telegram_adv/models.py:61
+msgid "blocked"
+msgstr ""
+
+#: telegram_adv/models.py:66 telegram_adv/models.py:429
+msgid "channel tag"
+msgstr ""
+
+#: telegram_adv/models.py:67 telegram_adv/models.py:428
+msgid "channel title"
+msgstr ""
+
+#: telegram_adv/models.py:68
+msgid "channel id"
+msgstr ""
+
+#: telegram_adv/models.py:69
+msgid "channel members"
+msgstr ""
+
+#: telegram_adv/models.py:70
+msgid "channel status"
+msgstr ""
+
+#: telegram_adv/models.py:98
+msgid "daily"
+msgstr ""
+
+#: telegram_adv/models.py:99
+msgid "before night"
+msgstr ""
+
+#: telegram_adv/models.py:100
+msgid "nightly"
+msgstr ""
+
+#: telegram_adv/models.py:106
+msgid "telegram name"
+msgstr ""
+
+#: telegram_adv/models.py:107
+msgid "start time"
+msgstr ""
+
+#: telegram_adv/models.py:108
+msgid "show duration"
+msgstr ""
+
+#: telegram_adv/models.py:109 telegram_adv/models.py:233
+msgid "view duration"
+msgstr ""
+
+#: telegram_adv/models.py:131
+msgid "panel text"
+msgstr ""
+
+#: telegram_adv/models.py:132
+msgid "panel link"
+msgstr ""
+
+#: telegram_adv/models.py:133
+msgid "panel row"
+msgstr ""
+
+#: telegram_adv/models.py:134
+msgid "panel column"
+msgstr ""
+
+#: telegram_adv/models.py:153 telegram_bot/models.py:41
+msgid "photo"
+msgstr ""
+
+#: telegram_adv/models.py:154 telegram_bot/models.py:42
+msgid "video"
+msgstr ""
+
+#: telegram_adv/models.py:155 telegram_bot/models.py:43
+msgid "audio"
+msgstr ""
+
+#: telegram_adv/models.py:156
+msgid "document"
+msgstr ""
+
+#: telegram_adv/models.py:165
+msgid "waiting"
+msgstr "منتظر تأیید"
+
+#: telegram_adv/models.py:166
+msgid "approved"
+msgstr "تأیید شده"
+
+#: telegram_adv/models.py:167
+msgid "close"
+msgstr "پایان یافته"
+
+#: telegram_adv/models.py:168
+msgid "rejected"
+msgstr "تأیید نشده"
+
+#: telegram_adv/models.py:174
+msgid "content"
+msgstr ""
+
+#: telegram_adv/models.py:175
+msgid "link"
+msgstr ""
+
+#: telegram_adv/models.py:176
+msgid "template"
+msgstr ""
+
+#: telegram_adv/models.py:177
+msgid "file type"
+msgstr ""
+
+#: telegram_adv/models.py:179
+msgid "number of glass panel"
+msgstr ""
+
+#: telegram_adv/models.py:180
+msgid "short link valid"
+msgstr ""
+
+#: telegram_adv/models.py:181
+msgid "short link number"
+msgstr ""
+
+#: telegram_adv/models.py:183
+msgid "status"
+msgstr ""
+
+#: telegram_adv/models.py:184
+msgid "max view"
+msgstr ""
+
+#: telegram_adv/models.py:199
+msgid ""
+"if check short link valid you have to fill link and define short link number"
+msgstr ""
+
+#: telegram_adv/models.py:202
+msgid "Missing title and content."
+msgstr ""
+
+#: telegram_adv/models.py:225
+msgid "total"
+msgstr ""
+
+#: telegram_adv/models.py:226
+msgid "partial"
+msgstr ""
+
+#: telegram_adv/models.py:229
+msgid "button text"
+msgstr ""
+
+#: telegram_adv/models.py:230
+msgid "view type"
+msgstr ""
+
+#: telegram_adv/models.py:231
+msgid "tariff"
+msgstr ""
+
+#: telegram_adv/models.py:232
+msgid "customer message id"
+msgstr ""
+
+#: telegram_adv/models.py:235
+msgid "is enable"
+msgstr ""
+
+#: telegram_adv/models.py:299 telegram_adv/models.py:314
+#, python-brace-format
+msgid "you should upload {self.file_type} file"
+msgstr ""
+
+#: telegram_adv/models.py:311
+msgid "receiver_channel can not be null"
+msgstr ""
+
+#: telegram_adv/models.py:327
+msgid "text reply"
+msgstr ""
+
+#: telegram_adv/models.py:328
+msgid "hidden sticker"
+msgstr ""
+
+#: telegram_adv/models.py:331
+msgid "rep type"
+msgstr ""
+
+#: telegram_adv/models.py:340
+msgid "please don't use space. separate with commas (@channel1,@channel2)"
+msgstr ""
+
+#: telegram_adv/models.py:344
+msgid ""
+"username is case-insensitive, must be at least 5-characters long, and may "
+"consist only of a-z, 0–9, and underscores."
+msgstr ""
+
+#: telegram_adv/models.py:356
+msgid "channels"
+msgstr "لیست کانال ها 📋"
+
+#: telegram_adv/models.py:357
+msgid "banner id"
+msgstr ""
+
+#: telegram_adv/models.py:358 telegram_adv/models.py:464
+msgid "banner views"
+msgstr ""
+
+#: telegram_adv/models.py:359
+msgid "rep id"
+msgstr ""
+
+#: telegram_adv/models.py:360
+msgid "rep views"
+msgstr ""
+
+#: telegram_adv/models.py:361
+msgid "screen shot file"
+msgstr ""
+
+#: telegram_adv/models.py:362
+msgid "screen shot time"
+msgstr ""
+
+#: telegram_adv/models.py:363
+msgid "receipt price"
+msgstr ""
+
+#: telegram_adv/models.py:364
+msgid "receipt date"
+msgstr ""
+
+#: telegram_adv/models.py:365
+msgid "receipt code"
+msgstr ""
+
+#: telegram_adv/models.py:366
+msgid "approve time"
+msgstr ""
+
+#: telegram_adv/models.py:367 telegram_bot/telegrambot.py:566
+msgid "sheba number"
+msgstr "شماره شبا 💎"
+
+#: telegram_adv/models.py:405 telegram_adv/models.py:427
+#: telegram_adv/models.py:448 telegram_user/models.py:9
+msgid "last update time"
+msgstr ""
+
+#: telegram_adv/models.py:406
+msgid "short link"
+msgstr ""
+
+#: telegram_adv/models.py:407
+msgid "reference id"
+msgstr ""
+
+#: telegram_adv/models.py:408
+msgid "utm campaign"
+msgstr ""
+
+#: telegram_adv/models.py:409
+msgid "hit count"
+msgstr ""
+
+#: telegram_adv/models.py:410
+msgid "ip count"
+msgstr ""
+
+#: telegram_adv/models.py:430
+msgid "chat id"
+msgstr ""
+
+#: telegram_adv/models.py:449
+msgid "bot name"
+msgstr ""
+
+#: telegram_adv/models.py:450
+msgid "bot token"
+msgstr ""
+
+#: telegram_adv/models.py:451
+msgid "agent mark"
+msgstr ""
+
+#: telegram_adv/models.py:465
+msgid "appended message views"
+msgstr ""
+
+#: telegram_bot/buttons.py:10 telegram_bot/telegrambot.py:75
+#: telegram_bot/telegrambot.py:563
+msgid "finish shot"
+msgstr "شات اتمام 🎊"
+
+#: telegram_bot/buttons.py:10 telegram_bot/telegrambot.py:90
+#: telegram_bot/telegrambot.py:562
+msgid "active ad"
+msgstr "تبلیغات فعال 📈"
+
+#: telegram_bot/buttons.py:10 telegram_bot/telegrambot.py:82
+#: telegram_bot/telegrambot.py:561
+msgid "get ad"
+msgstr "دریافت تبلیغ 🔍"
+
+#: telegram_bot/buttons.py:11 telegram_bot/telegrambot.py:98
+#: telegram_bot/telegrambot.py:571
+msgid "remove channel"
+msgstr "حذف کانال ❌"
+
+#: telegram_bot/buttons.py:11 telegram_bot/telegrambot.py:56
+#: telegram_bot/telegrambot.py:564
+msgid "add channel"
+msgstr "افزودن کانال ♨️"
+
+#: telegram_bot/buttons.py:12 telegram_bot/telegrambot.py:87
+#: telegram_bot/telegrambot.py:572
+msgid "report financial"
+msgstr "گزارش مالی 💵"
+
+#: telegram_bot/buttons.py:12 telegram_bot/telegrambot.py:60
+#: telegram_bot/telegrambot.py:567
+msgid "send sticker"
+msgstr "ارسال استیکر 👻"
+
+#: telegram_bot/buttons.py:13 telegram_bot/telegrambot.py:569
+msgid "about us"
+msgstr "درباره ما 📑"
+
+#: telegram_bot/buttons.py:13 telegram_bot/telegrambot.py:102
+#: telegram_bot/telegrambot.py:570
+msgid "help"
+msgstr "راهنما 🔦"
+
+#: telegram_bot/models.py:26
+msgid "input"
+msgstr ""
+
+#: telegram_bot/models.py:27
+msgid "menu"
+msgstr ""
+
+#: telegram_bot/models.py:28
+msgid "info"
+msgstr ""
+
+#: telegram_bot/models.py:29
+msgid "back"
+msgstr ""
+
+#: telegram_bot/models.py:30
+msgid "save_show_cancel"
+msgstr ""
+
+#: telegram_bot/models.py:34
+msgid "Message"
+msgstr ""
+
+#: telegram_bot/models.py:35
+msgid "Command"
+msgstr ""
+
+#: telegram_bot/models.py:36
+msgid "Callback"
+msgstr ""
+
+#: telegram_bot/models.py:44
+msgid "doc"
+msgstr ""
+
+#: telegram_bot/models.py:45
+msgid "sticker"
+msgstr ""
+
+#: telegram_bot/models.py:46
+msgid "all"
+msgstr ""
+
+#: telegram_bot/models.py:51
+msgid "type of button"
+msgstr ""
+
+#: telegram_bot/models.py:54
+msgid "button name"
+msgstr ""
+
+#: telegram_bot/models.py:55
+msgid "button row"
+msgstr ""
+
+#: telegram_bot/models.py:56
+msgid "button column"
+msgstr ""
+
+#: telegram_bot/models.py:58
+msgid "success text"
+msgstr ""
+
+#: telegram_bot/models.py:59
+msgid "error text"
+msgstr ""
+
+#: telegram_bot/models.py:60
+msgid "button function to call"
+msgstr ""
+
+#: telegram_bot/models.py:61
+msgid "kwargs for function"
+msgstr ""
+
+#: telegram_bot/models.py:62
+msgid "state handler"
+msgstr ""
+
+#: telegram_bot/models.py:63
+msgid "state filter"
+msgstr ""
+
+#: telegram_bot/telegrambot.py:79 telegram_bot/telegrambot.py:568
+msgid "send ad"
+msgstr ""
+
+#: telegram_bot/telegrambot.py:105
+msgid "about_us"
+msgstr "درباره ما 📑"
+
+#: telegram_user/models.py:10
+msgid "user id"
+msgstr ""
+
+#: telegram_user/models.py:11
+msgid "first name"
+msgstr ""
+
+#: telegram_user/models.py:12
+msgid "last name"
+msgstr ""
+
+#: telegram_user/models.py:13
+msgid "username"
+msgstr ""
+
+#: telegram_user/models.py:14
+msgid "is valid"
+msgstr ""
+
+#: telegram_user/models.py:15
+msgid "user sticker"
+msgstr ""
+
+#~ msgid "add_channel"
+#~ msgstr "افزودن کانال ♨️"
+
+#~ msgid "send_sticker"
+#~ msgstr "ارسال استیکر 👻"
+
+#~ msgid "finish_shot"
+#~ msgstr "شات اتمام 🎊"
+
+#~ msgid "get_ad"
+#~ msgstr "دریافت تبلیغ 🔍"
+
+#~ msgid "report_financial"
+#~ msgstr "گزارش مالی 💵"
+
+#~ msgid "active_ad"
+#~ msgstr "تبلیغات فعال 📈"
+
+#~ msgid "channel_list"
+#~ msgstr "لیست کانال ها 📋"
+
+#~ msgid "remove_channel"
+#~ msgstr "حذف کانال ❌"
+
+#~ msgid "sheba_number"
+#~ msgstr "شماره شبا 💎"

@@ -1,0 +1,45 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+    <style>
+        .myform {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px;
+        }
+
+        input[type=file] {
+            display: block;
+            margin: 10px;
+        }
+
+        input[type=submit] {
+            margin-top: 15px;
+        }
+
+        .back {
+            background: #79aec8;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+    </style>
+    <div class="form-group myform">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form }}
+            {% if form.errors %}
+                {% for er in form.errors %}
+                    <p class="alert">{{ er }}</p>
+                {% endfor %}
+            {% endif %}
+            <br>
+
+            <input type="submit" value="upload" class="btn btn-primary">
+        </form>
+    </div>
+    <a style="color: white" href="{% url 'admin:telegram_adv_campaignuser_changelist' %}" class="btn btn-primary back">&lt B‌ack</a>
+{% endblock %}
