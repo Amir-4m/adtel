@@ -5,6 +5,7 @@ Khayyam~=3.0.17
 persian~=0.4.0
 pandas
 psycopg2-binary
+django-jsonfield
 
 Django>=2.2, <2.3
 djangorestframework>=3.9, <4.0
