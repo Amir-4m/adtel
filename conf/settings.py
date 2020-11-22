@@ -123,12 +123,12 @@ CACHES = {
     'default': {
         'BACKEND': config('CACHE_BACKEND', default='django.core.cache.backends.locmem.LocMemCache'),
         'LOCATION': config('CACHE_HOST', default=''),
-        'KEY_PREFIX': 'ADMOODBOT',
+        'KEY_PREFIX': 'ADTEL',
     },
     'session': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         # TODO: put in local_settings
-        'LOCATION': '/tmp/django_adbot_cache',
+        'LOCATION': '/tmp/django_adtel_cache',
         'TIMEOUT': 2 * 86400,
     }
 }
