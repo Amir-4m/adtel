@@ -12,8 +12,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db.models import Case, When, F, IntegerField, Max, Sum
 from django.db.models.functions import Coalesce
+from django.contrib.postgres.fields import JSONField
 
-from jsonfield import JSONField
 from khayyam import JalaliDatetime
 from persian import convert_en_numbers
 
@@ -41,11 +41,6 @@ class BankAccount(models.Model):
         return f'{self.sheba_number} - {self.sheba_owner}'
 
 
-class LiveManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(status=TelegramChannel.STATUS_CONFIRMED)
-
-
 class TelegramChannel(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('update time'), auto_now=True)
@@ -57,9 +52,6 @@ class TelegramChannel(models.Model):
 
     sheba = models.ForeignKey(BankAccount, on_delete=models.CASCADE, related_name="channels")
     admins = models.ManyToManyField('telegram_user.TelegramUser', blank=True)
-
-    objects = models.Manager()
-    live = LiveManager()
 
     class Meta:
         db_table = 'telegram_channel'
