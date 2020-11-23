@@ -1,21 +1,10 @@
 include: "http://git.yourblueapi.com/gitlab-ci.yml"
+
 variables:
   PROJECT_DIR: "adtel"
 
-build_production:
-  tags:
-    - python
-    - production
-    - outside
-
-test_production:
+.production:
   tags:
     - django
     - production
-    - outside
-
-depoly_production:
-  tags:
-    - django
-    - production
-    - outside
+    - foreign
