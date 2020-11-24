@@ -272,7 +272,7 @@ class CampaignContent(models.Model):
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
     display_text = models.CharField(_('display text'), max_length=150)
     content = models.TextField(_('content'), blank=True)
-    extra_data = JSONField(editable=False)
+    extra_data = JSONField(default=dict, editable=False)
     view_type = models.CharField(_('view type'), max_length=7, choices=VIEW_TYPES)
     message_id = models.PositiveIntegerField(_('message id'), null=True, blank=True)
     post_link = models.URLField(
