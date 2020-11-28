@@ -283,5 +283,5 @@ class TelegramChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = TelegramChannel
         fields = (
-            'id', 'tag', 'title'
+            'id', 'tag', 'title', 'member_no', 'view_efficiency'
         )
