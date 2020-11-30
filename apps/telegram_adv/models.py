@@ -279,7 +279,7 @@ class CampaignContent(models.Model):
         _('post link'), null=True, blank=True,
         validators=[
             RegexValidator(
-                regex=r"(?:https?:)?//(?:t(?:elegram)?\.me|telegram\.org)/[a-zA-Z_]+/[0-9]+(/([0-9]+)?/?)?",
+                regex=r"(?:https?:)?//(?:t(?:elegram)?\.me|telegram\.org)/[a-zA-Z_0-9]+/[0-9]+(/([0-9]+)?/?)?",
                 message=_("this link is not a valid telegram post link")
             )
         ]
