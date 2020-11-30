@@ -48,6 +48,12 @@ class CampaignViewSet(BaseViewSet,
         if not campaign.contents.exists():
             raise ParseError(_('you can\'t test campaign without content'))
 
+        if campaign.contents.count() == 1:
+            post_link_content = getattr(campaign.contents.first(), "post_link", False)
+            if post_link_content:
+                # because no mother channel to send system message and render banner will raise error
+                raise ParseError(_('you can\'t test campaign with only one post_link content'))
+
         response, status = test_create_campaign(campaign=campaign)
         return Response(response, status=status)
 
