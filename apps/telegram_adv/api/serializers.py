@@ -222,6 +222,9 @@ class CampaignSerializer(serializers.ModelSerializer):
 
         else:
             publishers = attrs.get('publishers', None)
+            if any([p for p in publishers if p[1] == 0]):
+                raise ParseError(_('tariff could no be 0'))
+
             _publishers_count = TelegramChannel.objects.filter(
                 id__in=[p[0] for p in publishers]
             ).count()
