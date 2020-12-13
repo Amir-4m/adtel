@@ -18,7 +18,7 @@ def get_campaign_publisher_views(campaign_id):
     """
     report = []
     for content in CampaignContent.objects.prefetch_related(
-        'campaignpost_set__logs'
+            'campaignpost_set__logs'
     ).filter(
         campaign_id=campaign_id,
         view_type=CampaignContent.TYPE_VIEW_PARTIAL
@@ -49,8 +49,7 @@ def get_campaign_publisher_views(campaign_id):
                 'content': content.id,
                 'views': views,
                 'detail': CampaignUserSerializer(
-                    CampaignUser.objects.filter(id__in=qs.values_list('campaign_user__id', flat=True)), many=True
-                ).data
+                    CampaignUser.objects.filter(id__in=qs.values_list('campaign_user__id', flat=True)), many=True).data
             }
         )
 
