@@ -82,7 +82,8 @@ class CampaignFileSerializer(serializers.ModelSerializer):
 class CampaignContentSerializer(serializers.ModelSerializer):
     inlines = InlineKeyboardSerializer(many=True, required=False)
     files = CampaignFileSerializer(many=True, read_only=True, required=False)
-    links = serializers.ListField(child=serializers.JSONField(validators=[validate_link_utm]), write_only=True, required=False, allow_empty=True)
+    links = serializers.ListField(child=serializers.JSONField(validators=[validate_link_utm]), write_only=True,
+                                  required=False, allow_empty=True)
     mother_channel = serializers.IntegerField(write_only=True, required=False)
 
     class Meta:
@@ -138,7 +139,7 @@ class CampaignContentSerializer(serializers.ModelSerializer):
         inlines = validated_data.pop('inlines', [])
         links = validated_data.pop('links', [])
         mother_channel = validated_data.pop('mother_channel', None)
-        if mother_channel: # if pass post link no mother channel needed
+        if mother_channel:  # if pass post link no mother channel needed
             validated_data.update({'mother_channel': ReceiverChannel.objects.get(chat_id=mother_channel)})
         campaign_content = super().create(validated_data)
 
@@ -255,11 +256,12 @@ class CampaignSerializer(serializers.ModelSerializer):
 
 class CampaignPostSerializer(serializers.ModelSerializer):
     views = serializers.SerializerMethodField()
+    title = serializers.CharField(source='campaign_content.display_text')
 
     class Meta:
         model = CampaignPost
         fields = (
-            'views', 'screen_shot'
+            'views', 'screen_shot', 'title'
         )
 
     def get_views(self, obj):

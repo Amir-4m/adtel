@@ -4,7 +4,8 @@ from django.db.models.functions import Coalesce
 from rest_framework import status
 
 from apps.push.models import CampaignPush, CampaignPushUser
-from apps.telegram_adv.models import CampaignContent, TelegramChannel
+from apps.telegram_adv.api.serializers import CampaignUserSerializer
+from apps.telegram_adv.models import CampaignContent, TelegramChannel, CampaignUser
 from apps.telegram_bot.tasks import render_campaign
 from apps.telegram_user.models import TelegramUser
 
@@ -24,9 +25,8 @@ def get_campaign_publisher_views(campaign_id):
     ).order_by(
         'id'
     ):
-        views = content.campaignpost_set.filter(
-            is_enable=True
-        ).annotate(
+        qs = content.campaignpost_set.filter(is_enable=True)
+        views = qs.annotate(
             post_views=Case(
                 When(
                     views__isnull=True, then=Max('logs__banner_views')
@@ -44,7 +44,15 @@ def get_campaign_publisher_views(campaign_id):
         #
         # for post in content.campaignpost_set.filter(is_enable=True, views__isnull=True):
         #     views += getattr(post.logs.last(), 'banner_views', 0)
-        report.append({'content': content.id, 'views': views})
+        report.append(
+            {
+                'content': content.id,
+                'views': views,
+                'detail': CampaignUserSerializer(
+                    CampaignUser.objects.filter(id__in=qs.values_list('campaign_user__id', flat=True)), many=True
+                ).data
+            }
+        )
 
     return report
 
