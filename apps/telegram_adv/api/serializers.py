@@ -274,14 +274,18 @@ class CampaignPostSerializer(serializers.ModelSerializer):
 class CampaignUserSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source="user.username")
     channels = serializers.ReadOnlyField(source="channel_tags")
+    channel_ids = serializers.SerializerMethodField()
     posts = CampaignPostSerializer(source='campaignpost_set', many=True, read_only=True)
 
     class Meta:
         model = CampaignUser
         fields = (
             'created_time', 'username',
-            'channels', 'receipt_price', 'posts'
+            'channels', 'receipt_price', 'posts', 'channel_ids'
         )
+
+    def get_channel_ids(self, obj):
+        return obj.channels.values_list('id', flat=True)
 
 
 class TelegramChannelSerializer(serializers.ModelSerializer):
