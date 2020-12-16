@@ -119,6 +119,9 @@ class CampaignContentSerializer(serializers.ModelSerializer):
             attrs.pop('is_sticker', None)
 
         else:
+            if mother_channel is not None and not ReceiverChannel.objects.filter(chat_id=mother_channel).exists():
+                raise ParseError(_('mother channel id is not valid!'))
+
             if not mother_channel:
                 raise ParseError(_('mother channel can only be empty when post link is filled'))
 

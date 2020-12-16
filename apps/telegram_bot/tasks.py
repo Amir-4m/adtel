@@ -522,7 +522,7 @@ def initiate_context(campaign_content, mother_channel, text, reply_markup, user=
     campaign_file = None
     context = dict(chat_id=mother_channel,
                    caption=text,
-                   parse_mode='Markdown',
+                   parse_mode='HTML',
                    timeout=1000,
                    reply_markup=reply_markup)
 
