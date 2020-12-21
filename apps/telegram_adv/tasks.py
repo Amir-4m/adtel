@@ -1,6 +1,8 @@
 import logging
 
+import requests
 from celery import shared_task
+from django.conf import settings
 from telegram import Bot
 
 from django.db.models import Case, When, F, Sum, IntegerField, Q
@@ -153,3 +155,15 @@ def remove_test_campaigns_all_data():
     except Exception as e:
         logger.error(f"remove test data failed, error: {e}")
 
+
+@shared_task
+def update_publisher_channel():
+    """
+    call core api to get the new updates from channels
+    """
+    try:
+        response = requests.get(f'{settings.CORE_API_URL}medium/update-publishers/')
+        response.raise_for_status()
+    except Exception as e:
+        logger.error(f'calling update publisher api failed due to {e}')
+        return

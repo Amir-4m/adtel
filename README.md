@@ -59,6 +59,9 @@ END_SHOT_PUSH_TIME_HOUR = 5 # send push to user 5 hours before campaign end date
 SEND_SHOT_START_HOUR = 5 # check to pass 5 hours of campaign start datetime 
 SEND_SHOT_END_HOUR = 120 # user has 5 days after campaign end datetime to send his screen shot 
 TEST_CAMPAIGN_USER = 0 #chat_id
+
+CORE_API_URL = 'url'
+CORE_API_TOKEN = 'token'
 ```
 
 ## TELEGRAM PROXY

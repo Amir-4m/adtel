@@ -19,6 +19,7 @@ from telegram.utils.request import Request
 
 from . import texts, buttons
 from apps.utils.url_encoder import UrlEncoder
+from apps.utils.html import filter_escape
 from apps.telegram_bot.exceptions import ShortLinkError
 from apps.push.models import PushText, CampaignPush
 from apps.push.tasks import send_push_to_user
@@ -145,7 +146,9 @@ def get_files_id(campaign_content_id, channel_id, admin_id, file_type, from_msg_
             except FloodWaitError as e:
                 sleep(e.seconds)
             except Exception as e:
-                logger.error(f"import file for CampaignContent: {campaign_content_id} message: {message} failed, error: {e}")
+                logger.error(
+                    f"import file for CampaignContent: {campaign_content_id} message: {message} failed, error: {e}"
+                )
                 break
         admin.session = client.session.save()
         admin.save()
@@ -522,7 +525,7 @@ def initiate_context(campaign_content, mother_channel, text, reply_markup, user=
     campaign_file = None
     context = dict(chat_id=mother_channel,
                    caption=text,
-                   parse_mode='Markdown',
+                   parse_mode='HTML',
                    timeout=1000,
                    reply_markup=reply_markup)
 
@@ -563,8 +566,8 @@ def get_campaign_content_context(campaign_content, user, mother_channel, campaig
     """
 
     campaign_file = None
-    text, reply_markup, short_links_id = render_text_and_inline(campaign_content, campaign_user_id)
-
+    text_raw, reply_markup, short_links_id = render_text_and_inline(campaign_content, campaign_user_id)
+    text = filter_escape(text_raw)
     # we just need to update banner content due to short link valid is enable or not
     if campaign_content.view_type == CampaignContent.TYPE_VIEW_TOTAL and campaign_content.message_id:
         context = dict(message_id=campaign_content.message_id)
@@ -575,7 +578,7 @@ def get_campaign_content_context(campaign_content, user, mother_channel, campaig
                 dict(method=bot.edit_message_caption,
                      caption=text,
                      chat_id=mother_channel,
-                     parse_mode=ParseMode.MARKDOWN,
+                     parse_mode=ParseMode.HTML,
                      reply_markup=reply_markup)
             )
         # no change needed just forward
