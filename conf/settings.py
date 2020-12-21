@@ -356,8 +356,7 @@ ADMD_API_TOKEN = config('ADMD_API_TOKEN')
 
 TEST_CAMPAIGN_USER = config('TEST_CAMPAIGN_USER', cast=int)
 
-CORE_API_URL = config('CORE_API_URL')
-CORE_API_TOKEN = config('CORE_API_TOKEN')
+CORE_API_URL = config('CORE_API_URL', default="")
 
 if DEVEL is False:
     import sentry_sdk
