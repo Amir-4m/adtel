@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from apps.telegram_bot.tasks import upload_file
 from .models import CampaignUser, CampaignFile, TelegramChannel
-from .tasks import send_paid_push, create_publisher_channel
+from .tasks import send_paid_push, update_publisher_channel
 
 
 @receiver(post_save, sender=CampaignFile)
@@ -26,4 +26,4 @@ def paid_push_notification(sender, instance, created, **kwargs):
 @receiver(post_save, sender=TelegramChannel)
 def create_channel(sender, instance, created, **kwargs):
     if created:
-        create_publisher_channel.delay(instance.id)
+        update_publisher_channel.delay(instance.id)
