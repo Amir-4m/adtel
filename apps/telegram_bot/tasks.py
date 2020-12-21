@@ -19,6 +19,7 @@ from telegram.utils.request import Request
 
 from . import texts, buttons
 from apps.utils.url_encoder import UrlEncoder
+from apps.utils.html import filter_escape
 from apps.telegram_bot.exceptions import ShortLinkError
 from apps.push.models import PushText, CampaignPush
 from apps.push.tasks import send_push_to_user
@@ -520,9 +521,10 @@ def initiate_context(campaign_content, mother_channel, text, reply_markup, user=
     :return:
     """
     campaign_file = None
+    formatted_text = filter_escape(text)
     context = dict(chat_id=mother_channel,
-                   caption=text,
-                   parse_mode='Markdown',
+                   caption=formatted_text,
+                   parse_mode='HTML',
                    timeout=1000,
                    reply_markup=reply_markup)
 

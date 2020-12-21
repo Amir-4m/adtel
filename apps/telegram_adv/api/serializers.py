@@ -82,7 +82,8 @@ class CampaignFileSerializer(serializers.ModelSerializer):
 class CampaignContentSerializer(serializers.ModelSerializer):
     inlines = InlineKeyboardSerializer(many=True, required=False)
     files = CampaignFileSerializer(many=True, read_only=True, required=False)
-    links = serializers.ListField(child=serializers.JSONField(validators=[validate_link_utm]), write_only=True, required=False, allow_empty=True)
+    links = serializers.ListField(child=serializers.JSONField(validators=[validate_link_utm]), write_only=True,
+                                  required=False, allow_empty=True)
     mother_channel = serializers.IntegerField(write_only=True, required=False)
 
     class Meta:
@@ -118,6 +119,9 @@ class CampaignContentSerializer(serializers.ModelSerializer):
             attrs.pop('is_sticker', None)
 
         else:
+            if mother_channel is not None and not ReceiverChannel.objects.filter(chat_id=mother_channel).exists():
+                raise ParseError(_('mother channel id is not valid!'))
+
             if not mother_channel:
                 raise ParseError(_('mother channel can only be empty when post link is filled'))
 
@@ -138,7 +142,7 @@ class CampaignContentSerializer(serializers.ModelSerializer):
         inlines = validated_data.pop('inlines', [])
         links = validated_data.pop('links', [])
         mother_channel = validated_data.pop('mother_channel', None)
-        if mother_channel: # if pass post link no mother channel needed
+        if mother_channel:  # if pass post link no mother channel needed
             validated_data.update({'mother_channel': ReceiverChannel.objects.get(chat_id=mother_channel)})
         campaign_content = super().create(validated_data)
 
@@ -255,11 +259,12 @@ class CampaignSerializer(serializers.ModelSerializer):
 
 class CampaignPostSerializer(serializers.ModelSerializer):
     views = serializers.SerializerMethodField()
+    title = serializers.CharField(source='campaign_content.display_text')
 
     class Meta:
         model = CampaignPost
         fields = (
-            'views', 'screen_shot'
+            'views', 'screen_shot', 'title'
         )
 
     def get_views(self, obj):
@@ -272,14 +277,18 @@ class CampaignPostSerializer(serializers.ModelSerializer):
 class CampaignUserSerializer(serializers.ModelSerializer):
     username = serializers.ReadOnlyField(source="user.username")
     channels = serializers.ReadOnlyField(source="channel_tags")
+    channel_ids = serializers.SerializerMethodField()
     posts = CampaignPostSerializer(source='campaignpost_set', many=True, read_only=True)
 
     class Meta:
         model = CampaignUser
         fields = (
             'created_time', 'username',
-            'channels', 'receipt_price', 'posts'
+            'channels', 'receipt_price', 'posts', 'channel_ids'
         )
+
+    def get_channel_ids(self, obj):
+        return obj.channels.values_list('id', flat=True)
 
 
 class TelegramChannelSerializer(serializers.ModelSerializer):
