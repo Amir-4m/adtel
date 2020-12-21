@@ -147,7 +147,6 @@ SEND_PUSH_SHOT_SCHEDULE = ast.literal_eval(config('SEND_PUSH_SHOT_SCHEDULE'))
 REMOVE_TEST_CAMPAIGNS_SCHEDULE = ast.literal_eval(config('REMOVE_TEST_CAMPAIGNS_SCHEDULE'))
 CLOSE_CAMPAIGN_BY_MAX_VIEW_SCHEDULE = ast.literal_eval(config('CLOSE_CAMPAIGN_BY_MAX_VIEW_SCHEDULE'))
 
-
 # push to get shot for campaign
 END_SHOT_PUSH_TIME_HOUR = config('END_SHOT_PUSH_TIME_HOUR', cast=int, default=24)
 
@@ -356,6 +355,9 @@ ADMD_API_URL = config('ADMD_API_URL')
 ADMD_API_TOKEN = config('ADMD_API_TOKEN')
 
 TEST_CAMPAIGN_USER = config('TEST_CAMPAIGN_USER', cast=int)
+
+CORE_API_URL = config('CORE_API_URL')
+CORE_API_TOKEN = config('CORE_API_TOKEN')
 
 if DEVEL is False:
     import sentry_sdk

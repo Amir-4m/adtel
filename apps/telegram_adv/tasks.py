@@ -1,6 +1,8 @@
 import logging
 
+import requests
 from celery import shared_task
+from django.conf import settings
 from telegram import Bot
 
 from django.db.models import Case, When, F, Sum, IntegerField, Q
@@ -153,3 +155,33 @@ def remove_test_campaigns_all_data():
     except Exception as e:
         logger.error(f"remove test data failed, error: {e}")
 
+
+@shared_task
+def create_publisher_channel(channel_id):
+    """
+    create a publisher with the given channel in the core server
+    """
+    try:
+        channel = TelegramChannel.objects.get(id=channel_id)
+        data = {
+            "medium": 3,
+            "name": channel.title,
+            "ref_id": channel.id,
+            "extra_data": {
+                "member_no": channel.member_no,
+                "view_efficiency": channel.view_efficiency,
+                "tag": channel.tag
+            }
+        }
+        response = requests.post(
+            f'{settings.CORE_API_URL}medium/publishers/',
+            json=data,
+            headers={'Authorization': f'Bearer {settings.CORE_API_TOKEN}'}
+        )
+        response.raise_for_status()
+    except TelegramChannel.DoesNotExist:
+        logger.error(f"telegram channel with id {channel_id} does not exists!")
+        return
+    except Exception as e:
+        logger.error(f'creating publisher for channel {channel_id} failed due to {e}')
+        return
