@@ -1,6 +1,7 @@
 import logging
 
 from django.conf import settings
+from django.db.models.fields.files import ImageFieldFile, FileField
 from django.utils import timezone
 from django.core.cache import cache
 from django.db.models import Sum, Prefetch, Q
@@ -160,7 +161,10 @@ def send_push_to_user(campaign_push, users=None):
         )
     if not users:
         users = campaign_push.users.all()
-
+    campaign_file = campaign_push.campaign.file.get_file()
+    formatted_file = campaign_file
+    if isinstance(campaign_file, FileField):
+        formatted_file = ImageFieldFile(campaign_file, campaign_file, campaign_file.path)
     kwargs = {
         'caption': SEND_CAMPAIGN_PUSH.format(campaign_push.campaign.title),
         'reply_markup': campaign_push_reply_markup(
@@ -168,7 +172,7 @@ def send_push_to_user(campaign_push, users=None):
             campaign_push.get_push_data(),
         ),
         'parse_mode': 'HTML',
-        'photo': campaign_push.campaign.file.get_file()
+        'photo': formatted_file
     }
 
     for user in users:
