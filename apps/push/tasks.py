@@ -161,17 +161,16 @@ def send_push_to_user(campaign_push, users=None):
     if not users:
         users = campaign_push.users.all()
 
-    kwargs = {
-        'caption': SEND_CAMPAIGN_PUSH.format(campaign_push.campaign.title),
-        'reply_markup': campaign_push_reply_markup(
-            campaign_push.id,
-            campaign_push.get_push_data(),
-        ),
-        'parse_mode': 'HTML',
-        'photo': campaign_push.campaign.file.get_file()
-    }
-
     for user in users:
+        kwargs = {
+            'caption': SEND_CAMPAIGN_PUSH.format(campaign_push.campaign.title),
+            'reply_markup': campaign_push_reply_markup(
+                campaign_push.id,
+                campaign_push.get_push_data(),
+            ),
+            'parse_mode': 'HTML',
+            'photo': campaign_push.campaign.file.get_file()
+        }
         try:
             response = bot.send_photo(chat_id=user.user_id, **kwargs)
             CampaignPushUser.objects.filter(
@@ -181,7 +180,7 @@ def send_push_to_user(campaign_push, users=None):
                 message_id=response.message_id
             )
         except Exception as e:
-            logger.error(f"send push campaign: #{campaign_push.id} failed, error{e}")
+            logger.error(f"send push campaign: #{campaign_push.id} failed, error {e}")
 
 
 @shared_task
