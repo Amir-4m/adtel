@@ -391,9 +391,8 @@ class CampaignFile(models.Model):
             raise ValidationError(_("you should fill file or telegram file hash"), code='invalid')
 
     def get_file(self):
-        file = self.telegram_file_hash or self.file
-        formatted_file = file
-        if file is not None and file == self.file:
+        formatted_file = self.telegram_file_hash or self.file
+        if self.file_type == self.TYPE_PHOTO and formatted_file == self.file:
             formatted_file = ImageFieldFile(self.file, self.file, self.file.path)
         return formatted_file
 
