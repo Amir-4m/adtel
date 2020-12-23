@@ -1,6 +1,7 @@
 import re
 
 from django.db import models
+from django.db.models.fields.files import ImageFieldFile
 from django.urls import reverse
 from django.conf import settings
 from django.utils import timezone
@@ -390,7 +391,11 @@ class CampaignFile(models.Model):
             raise ValidationError(_("you should fill file or telegram file hash"), code='invalid')
 
     def get_file(self):
-        return self.telegram_file_hash or self.file
+        file = self.telegram_file_hash or self.file
+        formatted_file = file
+        if file is not None and file == self.file:
+            formatted_file = ImageFieldFile(self.file, self.file, self.file.path)
+        return formatted_file
 
 
 class InlineKeyboard(models.Model):
