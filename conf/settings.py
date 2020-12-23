@@ -308,6 +308,10 @@ LOGGING = ({
             'level': 'DEBUG',
             'handlers': ['file', 'console'],
         },
+        'push': {
+            'level': 'DEBUG',
+            'handlers': ['file', 'console'],
+        },
         'telegram_bot': {
             'level': 'DEBUG',
             'handlers': ['file', 'console'],
