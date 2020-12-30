@@ -158,6 +158,9 @@ def send_push_to_user(campaign_push, users=None):
         ).get(
             id=campaign_push
         )
+    elif not isinstance(campaign_push, CampaignPush):
+        logger.error(f"send push campaign: failed, error: campaign_push arg is not a instance of CampaignPush ")
+        return
     if not users:
         users = campaign_push.users.all()
 
@@ -170,10 +173,10 @@ def send_push_to_user(campaign_push, users=None):
         'parse_mode': 'HTML',
         'photo': campaign_push.campaign.file.get_file()
     }
-
+    photo = campaign_push.campaign.file.get_file()
     for user in users:
         try:
-            response = bot.send_photo(chat_id=user.user_id, **kwargs)
+            response = bot.send_photo(chat_id=user.user_id, photo=photo, **kwargs)
             CampaignPushUser.objects.filter(
                 campaign_push=campaign_push,
                 user=user,
@@ -181,6 +184,8 @@ def send_push_to_user(campaign_push, users=None):
                 message_id=response.message_id
             )
         except Exception as e:
+            campaign_push.status = CampaignPush.STATUS_FAILED
+            campaign_push.save()
             logger.error(f"send push campaign: #{campaign_push.id} failed, error{e}")
 
 

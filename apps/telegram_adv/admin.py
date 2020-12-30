@@ -108,7 +108,7 @@ class HasShebaListFilter(admin.SimpleListFilter):
 @admin.register(TelegramChannel)
 class TelegramChannelAdmin(admin.ModelAdmin):
     list_display = ['tag', 'id', 'view_efficiency', 'updated_time', 'member_no', 'sheba']
-    search_fields = ['tag', 'user__username']
+    search_fields = ['tag', 'admins__username']
     raw_id_fields = ['sheba']
     filter_horizontal = ['admins']
     list_filter = (

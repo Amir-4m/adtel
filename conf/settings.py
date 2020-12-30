@@ -304,19 +304,23 @@ LOGGING = ({
             'handlers': ['db_queries'],
             'propagate': False,
         },
-        'telegram_adv': {
+        'apps.telegram_adv': {
             'level': 'DEBUG',
             'handlers': ['file', 'console'],
         },
-        'telegram_bot': {
+        'apps.push': {
             'level': 'DEBUG',
             'handlers': ['file', 'console'],
         },
-        'reports': {
+        'apps.telegram_bot': {
             'level': 'DEBUG',
             'handlers': ['file', 'console'],
         },
-        'telegram_bot.tasks': {
+        'apps.reports': {
+            'level': 'DEBUG',
+            'handlers': ['file', 'console'],
+        },
+        'apps.telegram_bot.tasks': {
             'level': 'DEBUG',
             'handlers': ['file', 'console'],
             'propagate': False,
