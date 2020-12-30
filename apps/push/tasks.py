@@ -171,12 +171,11 @@ def send_push_to_user(campaign_push, users=None):
             campaign_push.get_push_data(),
         ),
         'parse_mode': 'HTML',
-        'photo': campaign_push.campaign.file.get_file()
     }
     photo = campaign_push.campaign.file.get_file()
     for user in users:
         try:
-            response = bot.send_photo(chat_id=user.user_id, photo=photo, **kwargs)
+            response = bot.send_photo(user.user_id, photo, **kwargs)
             CampaignPushUser.objects.filter(
                 campaign_push=campaign_push,
                 user=user,
