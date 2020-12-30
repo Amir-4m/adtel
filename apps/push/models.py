@@ -39,11 +39,14 @@ class CampaignPush(models.Model):
     STATUS_RECEIVED = 1
     STATUS_REJECTED = 2
     STATUS_EXPIRED = 3
+    STATUS_FAILED = 4
     STATUS_TYPES = (
         (STATUS_SENT, _('sent')),
         (STATUS_RECEIVED, _('received')),
         (STATUS_REJECTED, _('rejected')),
         (STATUS_EXPIRED, _('expired')),
+        (STATUS_FAILED, _('failed')),
+
     )
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
