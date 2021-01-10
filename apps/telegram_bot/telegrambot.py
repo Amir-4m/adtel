@@ -151,13 +151,8 @@ def push_campaign_management(bot, update, session):
         else:
             _p, campaign_push_id, channel_id, tariff = data.split('_')
             selected_channels = selected_channels.setdefault(campaign_push_id, [])
-            push_data = session.setdefault(
-                f'push_data_{campaign_push_id}',
-                CampaignPush.objects.get(
-                    id=campaign_push_id
-                ).get_push_data()
-            )
-
+            session[f'push_data_{campaign_push_id}'] = CampaignPush.objects.get(id=campaign_push_id).get_push_data()
+            push_data = session[f'push_data_{campaign_push_id}']
             channel_id = int(channel_id)
             if not selected_channels:
                 selected_channels.append({'id': channel_id, 'tariff': tariff})
@@ -169,7 +164,7 @@ def push_campaign_management(bot, update, session):
                         break
 
             elif BankAccount.objects.filter(
-                channels__in=(channel_id, selected_channels[0]['id'])
+                    channels__in=(channel_id, selected_channels[0]['id'])
             ).distinct().count() > 1:
                 return bot.answer_callback_query(
                     update.callback_query.id,
