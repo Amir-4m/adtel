@@ -26,4 +26,4 @@ def paid_push_notification(sender, instance, created, **kwargs):
 @receiver(post_save, sender=TelegramChannel)
 def create_channel(sender, instance, created, **kwargs):
     if created:
-        update_publisher_channel.delay(instance.id)
+        update_publisher_channel.delay()
