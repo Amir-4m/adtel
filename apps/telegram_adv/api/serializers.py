@@ -16,7 +16,8 @@ from apps.telegram_adv.models import (
     ReceiverChannel,
     TelegramAgent,
     CampaignUser,
-    CampaignPost
+    CampaignPost,
+    CampaignPostLog
 )
 
 
@@ -297,3 +298,9 @@ class TelegramChannelSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'tag', 'title', 'member_no', 'view_efficiency'
         )
+
+
+class CampaignPostLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CampaignPostLog
+        fields = '__all__'

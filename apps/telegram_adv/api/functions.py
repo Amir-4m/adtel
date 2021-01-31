@@ -5,7 +5,7 @@ from rest_framework import status
 
 from apps.push.models import CampaignPush, CampaignPushUser
 from apps.telegram_adv.api.serializers import CampaignUserSerializer
-from apps.telegram_adv.models import CampaignContent, TelegramChannel, CampaignUser
+from apps.telegram_adv.models import CampaignContent, TelegramChannel, CampaignUser, CampaignPostLog
 from apps.telegram_bot.tasks import render_campaign
 from apps.telegram_user.models import TelegramUser
 
@@ -25,31 +25,33 @@ def get_campaign_publisher_views(campaign_id):
     ).order_by(
         'id'
     ):
-        qs = content.campaignpost_set.filter(is_enable=True)
-        views = qs.annotate(
-            post_views=Case(
-                When(
-                    views__isnull=True, then=Max('logs__banner_views')
-                ), default=F('views')
-            )
-        ).aggregate(
-            views=Coalesce(Sum('post_views'), 0)
-        )['views']
-        # views = content.campaignpost_set.filter(
-        #     is_enable=True,
-        #     views__isnull=False
+        # qs = content.campaignpost_set.filter(is_enable=True)
+        # views = qs.annotate(
+        #     post_views=Case(
+        #         When(
+        #             views__isnull=True, then=Max('logs__banner_views')
+        #         ), default=F('views')
+        #     )
         # ).aggregate(
-        #     total_views=Coalesce(Sum('views'), 0)
-        # )['total_views']
-        #
-        # for post in content.campaignpost_set.filter(is_enable=True, views__isnull=True):
-        #     views += getattr(post.logs.last(), 'banner_views', 0)
+        #     views=Coalesce(Sum('post_views'), 0)
+        # )['views']
+        qs = CampaignPostLog.objects.filter(campaign_post__is_enable=True, campaign_post__campaign_content=content)
+
+        views = qs.values('campaign_post').annotate(post_views=Max('banner_views')).aggregate(views=Coalesce(Sum('post_views'), 0))['views']
+
+        hourly_views = {}
+        hourly = qs.values('created_time__hour', 'campaign_post').annotate(total_view=Max('banner_views'))
+        for _h in hourly:
+            hourly_views.setdefault(_h['created_time__hour'], 0)
+            hourly_views[_h['created_time__hour']] += _h['total_view']
+
         report.append(
             {
                 'content': content.id,
                 'views': views,
+                'hourly': hourly_views,
                 'detail': CampaignUserSerializer(
-                    CampaignUser.objects.filter(id__in=qs.values_list('campaign_user__id', flat=True)), many=True).data
+                    CampaignUser.objects.filter(id__in=qs.values_list('campaign_post__campaign_user__id', flat=True)), many=True).data
             }
         )
 
