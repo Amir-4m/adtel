@@ -282,8 +282,8 @@ class CampaignContent(models.Model):
     extra_data = JSONField(default=dict, editable=False)
     view_type = models.CharField(_('view type'), max_length=7, choices=VIEW_TYPES)
     message_id = models.PositiveIntegerField(_('message id'), null=True, blank=True)
-    post_link = models.CharField(
-        _('post link'), null=True, blank=True, max_length=520,
+    post_link = models.TextField(
+        _('post link'), null=True, blank=True,
         validators=[
             RegexValidator(
                 regex=r"(?:https?:)?//(?:t(?:elegram)?\.me|telegram\.org)/[a-zA-Z_0-9]+/[0-9]+(/([0-9]+)?/?)?",
@@ -318,7 +318,7 @@ class CampaignContent(models.Model):
 class CampaignLink(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('last update time'), auto_now=True)
-    link = models.CharField(_('link'), max_length=520)
+    link = models.TextField(_('link'))
     extra_data = JSONField(default=dict)
 
     campaign_content = models.ForeignKey(CampaignContent, on_delete=models.PROTECT, related_name="links")
@@ -409,7 +409,7 @@ class InlineKeyboard(models.Model):
     text = models.CharField(_('panel text'), max_length=100)
     row = models.PositiveIntegerField(_('panel row'))
     column = models.PositiveIntegerField(_('panel column'))
-    link = models.CharField(_('link'), max_length=520)
+    link = models.TextField(_('link'))
 
     campaign_link = models.OneToOneField(CampaignLink, on_delete=models.PROTECT, related_name="inline", null=True,
                                          blank=True)
