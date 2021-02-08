@@ -152,10 +152,16 @@ class Campaign(models.Model):
         start_time = convert_en_numbers(JalaliDatetime(self.start_datetime).strftime("%m/%d"))
         return f"{start_time} - {self.title}"
 
+    def post_limit_text_display(self):
+        return {
+            0: "پست آزاد",
+            1: "پست آخر",
+        }.get(self.post_limit, f"پست {convert_en_numbers(self.post_limit)}")
+
     def text_get_ad(self):
         tariif = self.publishers.aggregate(pt=Max('campaignpublisher__tariff'))
         return f"بنر {self.title} - کایی {convert_en_numbers(tariif['pt'])} - محدودیت " \
-               f"{convert_en_numbers(self.post_limit)} پست"
+               f"{self.post_limit_text_display()}"
 
     def url_encode(self):
         return url_encoder.encode_id(self.id)
@@ -405,7 +411,8 @@ class InlineKeyboard(models.Model):
     column = models.PositiveIntegerField(_('panel column'))
     link = models.CharField(_('link'), max_length=520)
 
-    campaign_link = models.OneToOneField(CampaignLink, on_delete=models.PROTECT, related_name="inline", null=True, blank=True)
+    campaign_link = models.OneToOneField(CampaignLink, on_delete=models.PROTECT, related_name="inline", null=True,
+                                         blank=True)
     campaign_content = models.ForeignKey(CampaignContent, related_name="inlines", on_delete=models.CASCADE)
 
     class Meta:

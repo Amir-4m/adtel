@@ -214,7 +214,7 @@ class CampaignSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'title', 'status', 'is_enable',
             'start_datetime', 'end_datetime', 'publishers',
-            'contents', 'max_view', 'agents', 'file'
+            'contents', 'max_view', 'agents', 'file', 'post_limit'
         )
         read_only_fields = ('id', 'file')
 
