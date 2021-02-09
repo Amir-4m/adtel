@@ -73,4 +73,4 @@ class CampaignFileViewSet(BaseViewSet,
 class TelegramChannelViewSet(BaseViewSet,
                              mixins.ListModelMixin):
     serializer_class = TelegramChannelSerializer
-    queryset = TelegramChannel.objects.filter(view_efficiency__gt=0).order_by('id')
+    queryset = TelegramChannel.objects.order_by('-pk')
