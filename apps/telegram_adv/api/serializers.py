@@ -126,10 +126,10 @@ class CampaignContentSerializer(serializers.ModelSerializer):
             if not mother_channel:
                 raise ParseError(_('mother channel can only be empty when post link is filled'))
 
-            elif content:
-                # if links, all of them should exists in content for replace them with shortlink
-                if any(link_data['link'] for link_data in links if link_data['link'] not in content):
-                    raise ParseError(_('your links should be exist in your content'))
+            # elif content:
+            #     # if links, all of them should exists in content for replace them with shortlink
+            #     if any(link_data['link'] for link_data in links if link_data['link'] not in content):
+            #         raise ParseError(_('your links should be exist in your content'))
 
             elif is_sticker:  # content is sticker
                 attrs.pop('inlines', None)
