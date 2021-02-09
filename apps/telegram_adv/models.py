@@ -152,10 +152,16 @@ class Campaign(models.Model):
         start_time = convert_en_numbers(JalaliDatetime(self.start_datetime).strftime("%m/%d"))
         return f"{start_time} - {self.title}"
 
+    def post_limit_text_display(self):
+        return {
+            0: "پست آزاد",
+            1: "پست آخر",
+        }.get(self.post_limit, f"پست {convert_en_numbers(self.post_limit)}")
+
     def text_get_ad(self):
         tariif = self.publishers.aggregate(pt=Max('campaignpublisher__tariff'))
         return f"بنر {self.title} - کایی {convert_en_numbers(tariif['pt'])} - محدودیت " \
-               f"{convert_en_numbers(self.post_limit)} پست"
+               f"{self.post_limit_text_display()}"
 
     def url_encode(self):
         return url_encoder.encode_id(self.id)
@@ -276,7 +282,7 @@ class CampaignContent(models.Model):
     extra_data = JSONField(default=dict, editable=False)
     view_type = models.CharField(_('view type'), max_length=7, choices=VIEW_TYPES)
     message_id = models.PositiveIntegerField(_('message id'), null=True, blank=True)
-    post_link = models.URLField(
+    post_link = models.TextField(
         _('post link'), null=True, blank=True,
         validators=[
             RegexValidator(
@@ -312,7 +318,7 @@ class CampaignContent(models.Model):
 class CampaignLink(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('last update time'), auto_now=True)
-    link = models.URLField(_('link'))
+    link = models.TextField(_('link'))
     extra_data = JSONField(default=dict)
 
     campaign_content = models.ForeignKey(CampaignContent, on_delete=models.PROTECT, related_name="links")
@@ -403,9 +409,10 @@ class InlineKeyboard(models.Model):
     text = models.CharField(_('panel text'), max_length=100)
     row = models.PositiveIntegerField(_('panel row'))
     column = models.PositiveIntegerField(_('panel column'))
-    link = models.URLField(_('link'))
+    link = models.TextField(_('link'))
 
-    campaign_link = models.OneToOneField(CampaignLink, on_delete=models.PROTECT, related_name="inline", null=True, blank=True)
+    campaign_link = models.OneToOneField(CampaignLink, on_delete=models.PROTECT, related_name="inline", null=True,
+                                         blank=True)
     campaign_content = models.ForeignKey(CampaignContent, related_name="inlines", on_delete=models.CASCADE)
 
     class Meta:

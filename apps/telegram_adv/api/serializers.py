@@ -214,7 +214,7 @@ class CampaignSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'title', 'status', 'is_enable',
             'start_datetime', 'end_datetime', 'publishers',
-            'contents', 'max_view', 'agents', 'file'
+            'contents', 'max_view', 'agents', 'file', 'post_limit'
         )
         read_only_fields = ('id', 'file')
 
@@ -227,9 +227,6 @@ class CampaignSerializer(serializers.ModelSerializer):
 
         else:
             publishers = attrs.get('publishers', None)
-            if any([p for p in publishers if p[1] == 0]):
-                raise ParseError(_('tariff could no be 0'))
-
             _publishers_count = TelegramChannel.objects.filter(
                 id__in=[p[0] for p in publishers]
             ).count()
