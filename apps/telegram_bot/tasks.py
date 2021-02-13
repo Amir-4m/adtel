@@ -116,7 +116,7 @@ def upload_file(obj_id, push=False):
         file_id = grab_file_id(bot_response, file_type)
         model.objects.filter(id=obj_id).update(telegram_file_hash=file_id)
     except Exception as e:
-        logger.error(f"upload {model_file}: {obj_id} failed, error: {e}")
+        logger.error(f"upload file {model_file}: {obj_id} failed with chat id {settings.BOT_VIEW_CHANNEL_ID}, error: {e}")
 
 
 @shared_task
@@ -130,11 +130,12 @@ def get_files_id(campaign_content_id, channel_id, admin_id, file_type, from_msg_
     with TelegramClient(StringSession(admin.session), admin.api_id, admin.api_hash, proxy=TELETHON_PROXY) as client:
         client.session.save_entities = False
         client.flood_sleep_threshold = 0
-        messages = client.iter_messages(channel.chat_id, min_id=max(from_msg_id-1, 1), max_id=to_msg_id+1)
+        messages = client.iter_messages(channel.chat_id, min_id=max(from_msg_id - 1, 1), max_id=to_msg_id + 1)
         for message in messages:
             try:
                 file_id = pack_bot_file_id(message.media)
-                if not CampaignFile.objects.filter(campaign_content=campaign_content, telegram_file_hash=file_id).exists():
+                if not CampaignFile.objects.filter(campaign_content=campaign_content,
+                                                   telegram_file_hash=file_id).exists():
                     campaign_files.append(
                         CampaignFile(
                             name=f"{campaign_content.display_text} {file_type} {message.id}",
@@ -388,7 +389,8 @@ def receive_shot(telegram_user_id, file_id, campaign_post_id):
 
             campaign_post.save(update_fields=update_fields)
 
-        agent.send_message(telegram_user_id, texts.SEND_SHOT_SUCCESS, reply_markup=buttons.back_button("back_to_campaign"))
+        agent.send_message(telegram_user_id, texts.SEND_SHOT_SUCCESS,
+                           reply_markup=buttons.back_button("back_to_campaign"))
     except Exception as e:
         logger.error(msg=f'receive shot failed, error: {e}')
         agent.send_message(telegram_user_id, texts.SEND_SHOT_ERROR, reply_markup=buttons.start_buttons())
