@@ -281,7 +281,7 @@ def log_campaign_post_views():
         views__isnull=True
     ).order_by('?'))
     if campaign_posts:
-        read_campaign_posts_views(campaign_posts, log_mode=True, update_views=True)
+        read_campaign_posts_views(campaign_posts, log_mode=True, update_views=False)
 
 
 @shared_task
