@@ -22,3 +22,4 @@ Telethon==1.11.3
 python-decouple==3.3
 sentry-sdk==0.19.1
 jsonschema
+django-admin-autocomplete-filter==0.6.1

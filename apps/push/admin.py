@@ -146,12 +146,13 @@ class PushUserInline(ReadOnlyTabularInline):
 
 @admin.register(CampaignPush)
 class PushCampaignAdmin(ReadOnlyAdmin):
-    list_display = ('campaign', 'status', 'channels', 'confirmed_channels')
+    list_display = ('campaign', 'status', 'channels', 'confirmed_channels', 'created_time', 'updated_time')
+    search_fields = ('campaign__title',)
     list_select_related = ('campaign',)
     filter_horizontal = ('publishers',)
     inlines = (PushUserInline,)
     list_filter = [
-        ('campaign', CampaignFilter)
+        CampaignFilter
     ]
 
     def channels(self, obj):
