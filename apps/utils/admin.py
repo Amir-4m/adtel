@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils import timezone
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
+from admin_auto_filters.filters import AutocompleteFilter
 
 from apps.telegram_adv.models import Campaign
 
@@ -65,17 +66,6 @@ class ReadOnlyTabularInline(admin.TabularInline):
         return False
 
 
-class CampaignFilter(RelatedDropdownFilter):
-    def field_choices(self, field, request, model_admin):
-        ordering = ()
-        related_admin = model_admin.admin_site._registry.get(field.remote_field.model)
-        if related_admin is not None:
-            ordering = related_admin.get_ordering(request)
-        return field.get_choices(
-            include_blank=False,
-            ordering=ordering,
-            limit_choices_to={
-                'status__in': [Campaign.STATUS_APPROVED, Campaign.STATUS_CLOSE],
-                'created_time__gt': timezone.now() - timezone.timedelta(days=31),
-            }
-        )
+class CampaignFilter(AutocompleteFilter):
+    title = 'Campaign'
+    field_name = 'campaign'
