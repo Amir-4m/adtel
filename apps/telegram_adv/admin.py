@@ -322,8 +322,8 @@ class CampaignContentAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         return [
-           path('import_files/?<int:pk>/', self.admin_site.admin_view(campaign_content_import_files), name='import-files'),
-        ] + super().get_urls()
+                   path('import_files/?<int:pk>/', self.admin_site.admin_view(campaign_content_import_files), name='import-files'),
+               ] + super().get_urls()
 
     def file_count(self, obj):
         return obj.files.count()
@@ -449,10 +449,9 @@ class CampaignUserAdmin(ReadOnlyAdmin):
     raw_id_fields = ['campaign', 'user']
     filter_horizontal = ['channels']
     search_fields = ['campaign__title', 'user__username', 'user__user_id']
-    list_filter = (
-        ('campaign', CampaignFilter),
-        IsPaidListFilter,
-    )
+    list_filter = [
+        CampaignFilter
+    ]
     actions = (
         export_campaign_user_filter_by_campaign,
     )
@@ -661,7 +660,7 @@ class CampaignPostAdmin(ReadOnlyAdmin):
     search_fields = ['=campaign_user__user__username']
     actions = [approve_screenshots, update_campaign_posts_view]
     list_filter = (
-        ('campaign_content__campaign', CampaignFilter),
+        CampaignFilter,
         HasTariffPostListFilter,
         HasScreenShotListFilter,
         HasShortLinkListFilter,
@@ -693,18 +692,22 @@ class CampaignPostAdmin(ReadOnlyAdmin):
 
     def screen_preview(self, obj):
         return obj._screen_preview()
+
     screen_preview.short_description = _('Screen Shot')
 
     def is_approved(self, obj):
         return obj._is_approved
+
     is_approved.boolean = True
 
     def has_tariff(self, obj):
         return obj._has_tariff
+
     has_tariff.boolean = True
 
     def has_tracker(self, obj):
         return obj.has_tracker
+
     has_tracker.boolean = True
 
     def get_readonly_fields(self, request, obj=None):
@@ -757,5 +760,5 @@ class CampaignPublisherAdmin(ReadOnlyAdmin):
     list_select_related = ('campaign', 'publisher')
     raw_id_fields = ('campaign', 'publisher')
     list_filter = (
-        ('campaign', CampaignFilter),
+        CampaignFilter,
     )
