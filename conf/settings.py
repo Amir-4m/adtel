@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'markdownx',
     'rest_framework',
     'rest_framework.authtoken',
+    'admin_auto_filters',
 
     'django.contrib.humanize',
     'django_admin_listfilter_dropdown',
