@@ -145,7 +145,7 @@ class PushUserInline(ReadOnlyTabularInline):
 
 
 @admin.register(CampaignPush)
-class PushCampaignAdmin(ReadOnlyAdmin):
+class PushCampaignAdmin(admin.ModelAdmin):
     list_display = ('campaign', 'status', 'channels', 'confirmed_channels', 'created_time', 'updated_time')
     search_fields = ('campaign__title',)
     list_select_related = ('campaign',)
