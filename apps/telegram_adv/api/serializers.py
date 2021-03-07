@@ -262,7 +262,7 @@ class CampaignPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = CampaignPost
         fields = (
-            'views', 'screen_shot', 'title'
+            'views', 'screen_shot', 'title', 'message_id'
         )
 
     def get_views(self, obj):

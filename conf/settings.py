@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'markdownx',
     'rest_framework',
     'rest_framework.authtoken',
+    'admin_auto_filters',
 
     'django.contrib.humanize',
     'django_admin_listfilter_dropdown',
@@ -304,27 +305,11 @@ LOGGING = ({
             'handlers': ['db_queries'],
             'propagate': False,
         },
-        'apps.telegram_adv': {
+        'apps': {
             'level': 'DEBUG',
             'handlers': ['file', 'console'],
         },
-        'apps.push': {
-            'level': 'DEBUG',
-            'handlers': ['file', 'console'],
-        },
-        'apps.telegram_bot': {
-            'level': 'DEBUG',
-            'handlers': ['file', 'console'],
-        },
-        'apps.reports': {
-            'level': 'DEBUG',
-            'handlers': ['file', 'console'],
-        },
-        'apps.telegram_bot.tasks': {
-            'level': 'DEBUG',
-            'handlers': ['file', 'console'],
-            'propagate': False,
-        },
+
         # 'telegram.ext.dispatcher': {
         #     'level': 'DEBUG',
         #     'handlers': ['file'],

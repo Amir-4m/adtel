@@ -135,7 +135,7 @@ class Campaign(models.Model):
     end_datetime = models.DateTimeField(_('end datetime'))
 
     publishers = models.ManyToManyField(TelegramChannel, through="CampaignPublisher")
-    receiver_agents = models.ManyToManyField('TelegramAgent', verbose_name='receiver agent')
+    receiver_agents = models.ManyToManyField('TelegramAgent', verbose_name='receiver agent', blank=True)
 
     class Meta:
         db_table = "campaigns"
