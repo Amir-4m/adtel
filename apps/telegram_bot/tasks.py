@@ -256,11 +256,11 @@ def read_campaign_posts_views(campaign_posts, log_mode=True, update_views=False)
                             banner_views=banner_views,
                         )
                     )
-                logger.info(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign.id}")
+                logger.info(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id}")
             except FloodWaitError as e:
-                logger.warning(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign.id} failed, error: {e}")
+                logger.warning(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id} failed, error: {e}")
             except Exception as e:
-                logger.error(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign.id} failed, error: {e}")
+                logger.error(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id} failed, error: {e}")
 
         adm_ts.session = client.session.save()
         adm_ts.save()
