@@ -20,9 +20,23 @@ class PushText(models.Model):
 
 
 class CampaignPushUser(models.Model):
+    STATUS_SENT = 0
+    STATUS_RECEIVED = 1
+    STATUS_REJECTED = 2
+    STATUS_EXPIRED = 3
+    STATUS_FAILED = 4
+    STATUS_TYPES = (
+        (STATUS_SENT, _('sent')),
+        (STATUS_RECEIVED, _('received')),
+        (STATUS_REJECTED, _('rejected')),
+        (STATUS_EXPIRED, _('expired')),
+        (STATUS_FAILED, _('failed')),
+
+    )
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
     message_id = models.PositiveIntegerField(_('message id'), null=True, editable=False)
+    status = models.SmallIntegerField(_('status'), choices=STATUS_TYPES, default=STATUS_SENT)
 
     campaign_push = models.ForeignKey("CampaignPush", on_delete=models.CASCADE, related_name="user_pushes")
     user = models.ForeignKey(TelegramUser, on_delete=models.CASCADE, related_name="pushes")
