@@ -252,8 +252,8 @@ class Campaign(models.Model):
 
 class CampaignPublisher(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
-    publisher = models.ForeignKey(TelegramChannel, on_delete=models.PROTECT)
-    campaign = models.ForeignKey(Campaign, on_delete=models.PROTECT)
+    publisher = models.ForeignKey(TelegramChannel, on_delete=models.CASCADE)
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
     tariff = models.PositiveIntegerField(_('tariff'))
 
     class Meta:
@@ -293,8 +293,8 @@ class CampaignContent(models.Model):
     )
     is_sticker = models.BooleanField(_('is sticker'), default=False)
 
-    campaign = models.ForeignKey(Campaign, on_delete=models.PROTECT, related_name="contents")
-    mother_channel = models.ForeignKey(ReceiverChannel, on_delete=models.PROTECT, null=True, blank=True)
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="contents")
+    mother_channel = models.ForeignKey(ReceiverChannel, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         db_table = "campaigns_contents"
@@ -321,7 +321,7 @@ class CampaignLink(models.Model):
     link = models.TextField(_('link'))
     extra_data = JSONField(default=dict)
 
-    campaign_content = models.ForeignKey(CampaignContent, on_delete=models.PROTECT, related_name="links")
+    campaign_content = models.ForeignKey(CampaignContent, on_delete=models.CASCADE, related_name="links")
 
     class Meta:
         db_table = 'campaign_link'
@@ -339,8 +339,8 @@ class ShortLink(models.Model):
     link = models.CharField(_('short link'), max_length=60)
     reference_id = models.PositiveIntegerField(_('reference id'), blank=True)
 
-    campaign_link = models.ForeignKey(CampaignLink, on_delete=models.PROTECT, related_name="short_links")
-    campaign_post = models.ForeignKey("CampaignPost", on_delete=models.PROTECT, related_name="links", null=True)
+    campaign_link = models.ForeignKey(CampaignLink, on_delete=models.CASCADE, related_name="short_links")
+    campaign_post = models.ForeignKey("CampaignPost", on_delete=models.CASCADE, related_name="links", null=True)
 
     class Meta:
         db_table = 'telegram_short_links'
@@ -354,7 +354,7 @@ class ShortLinkLog(models.Model):
     hit_count = models.PositiveIntegerField(_('hit count'), default=0)
     ip_count = models.PositiveIntegerField(_('ip count'), default=0)
 
-    short_link = models.ForeignKey(ShortLink, on_delete=models.PROTECT, related_name="logs")
+    short_link = models.ForeignKey(ShortLink, on_delete=models.CASCADE, related_name="logs")
 
     class Meta:
         db_table = 'telegram_short_links_logs'
@@ -384,7 +384,7 @@ class CampaignFile(models.Model):
     file_type = models.CharField(_('file type'), max_length=8, choices=FILE_TYPES)
 
     campaign_content = models.ForeignKey(CampaignContent, on_delete=models.CASCADE, related_name="files", null=True)
-    campaign = models.OneToOneField(Campaign, on_delete=models.PROTECT, related_name="file", null=True)
+    campaign = models.OneToOneField(Campaign, on_delete=models.CASCADE, related_name="file", null=True)
 
     class Meta:
         db_table = "campaigns_files"
@@ -411,7 +411,7 @@ class InlineKeyboard(models.Model):
     column = models.PositiveIntegerField(_('panel column'))
     link = models.TextField(_('link'))
 
-    campaign_link = models.OneToOneField(CampaignLink, on_delete=models.PROTECT, related_name="inline", null=True,
+    campaign_link = models.OneToOneField(CampaignLink, on_delete=models.CASCADE, related_name="inline", null=True,
                                          blank=True)
     campaign_content = models.ForeignKey(CampaignContent, related_name="inlines", on_delete=models.CASCADE)
 
@@ -452,9 +452,9 @@ class CampaignUser(models.Model):
     sheba_owner = models.CharField(_('sheba owner'), max_length=100)
     tariff = models.PositiveIntegerField(_('tariff'), null=True, blank=True)
 
-    campaign = models.ForeignKey(Campaign, on_delete=models.PROTECT)
-    user = models.ForeignKey('telegram_user.TelegramUser', on_delete=models.PROTECT)
-    agent = models.ForeignKey(TelegramAgent, on_delete=models.PROTECT)
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
+    user = models.ForeignKey('telegram_user.TelegramUser', on_delete=models.CASCADE)
+    agent = models.ForeignKey(TelegramAgent, on_delete=models.CASCADE)
     channels = models.ManyToManyField(TelegramChannel)
 
     objects = models.Manager()
@@ -521,10 +521,10 @@ class CampaignPost(models.Model):
     screen_time = models.DateTimeField(_('screen shot time'), null=True, editable=False)
     approve_time = models.DateTimeField(_('approve time'), null=True, editable=False)
 
-    campaign_content = models.ForeignKey(CampaignContent, on_delete=models.PROTECT)
-    campaign_file = models.ForeignKey(CampaignFile, on_delete=models.PROTECT, related_name="posts", null=True,
+    campaign_content = models.ForeignKey(CampaignContent, on_delete=models.CASCADE)
+    campaign_file = models.ForeignKey(CampaignFile, on_delete=models.CASCADE, related_name="posts", null=True,
                                       blank=True)
-    campaign_user = models.ForeignKey(CampaignUser, on_delete=models.PROTECT)
+    campaign_user = models.ForeignKey(CampaignUser, on_delete=models.CASCADE)
 
     description = models.TextField(_('description'), blank=True)
     is_enable = models.BooleanField(_('is enable'), default=True)

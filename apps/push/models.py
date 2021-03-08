@@ -13,7 +13,7 @@ class PushText(models.Model):
     image = models.ImageField(_('image'), blank=True)
     telegram_file_hash = models.CharField(_('telegram file hash'), max_length=300, null=True, editable=False)
     message_id = models.PositiveIntegerField(_('message id'), null=True, blank=True)
-    receiver_channel = models.ForeignKey(ReceiverChannel, on_delete=models.PROTECT, null=True, blank=True)
+    receiver_channel = models.ForeignKey(ReceiverChannel, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -24,8 +24,8 @@ class CampaignPushUser(models.Model):
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
     message_id = models.PositiveIntegerField(_('message id'), null=True, editable=False)
 
-    campaign_push = models.ForeignKey("CampaignPush", on_delete=models.PROTECT, related_name="user_pushes")
-    user = models.ForeignKey(TelegramUser, on_delete=models.PROTECT, related_name="pushes")
+    campaign_push = models.ForeignKey("CampaignPush", on_delete=models.CASCADE, related_name="user_pushes")
+    user = models.ForeignKey(TelegramUser, on_delete=models.CASCADE, related_name="pushes")
 
     def __str__(self):
         return f"user: {self.user_id} push_id: {self.campaign_push_id}"
@@ -52,7 +52,7 @@ class CampaignPush(models.Model):
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
     status = models.SmallIntegerField(_('status'), choices=STATUS_TYPES, default=STATUS_SENT)
 
-    campaign = models.ForeignKey(Campaign, on_delete=models.PROTECT, related_name="pushes")
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="pushes")
     users = models.ManyToManyField(TelegramUser, through=CampaignPushUser)
     publishers = models.ManyToManyField(TelegramChannel)
 
