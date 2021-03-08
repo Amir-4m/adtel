@@ -773,10 +773,13 @@ class CampaignLinkAdmin(admin.ModelAdmin):
 
 
 @admin.register(CampaignPublisher)
-class CampaignPublisherAdmin(ReadOnlyAdmin):
+class CampaignPublisherAdmin(admin.ModelAdmin):
     list_display = ('campaign', 'publisher', 'tariff')
     list_select_related = ('campaign', 'publisher')
     raw_id_fields = ('campaign', 'publisher')
     list_filter = (
         CampaignFilter,
     )
+
+    def has_change_permission(self, request, obj=None):
+        return False
