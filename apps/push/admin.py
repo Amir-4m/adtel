@@ -133,8 +133,8 @@ class PushTextAdmin(admin.ModelAdmin):
                ] + super().get_urls()
 
 
-class PushUserInline(ReadOnlyTabularInline):
-    fields = ('user', 'is_delivered')
+class PushUserInline(admin.TabularInline):
+    fields = ('user', 'is_delivered', 'status')
     readonly_fields = ('is_delivered',)
     model = CampaignPushUser
     extra = 0
@@ -146,7 +146,7 @@ class PushUserInline(ReadOnlyTabularInline):
 
 @admin.register(CampaignPush)
 class PushCampaignAdmin(admin.ModelAdmin):
-    list_display = ('campaign', 'status', 'channels', 'confirmed_channels', 'created_time', 'updated_time')
+    list_display = ('campaign', 'channels', 'confirmed_channels', 'created_time', 'updated_time')
     search_fields = ('campaign__title',)
     list_select_related = ('campaign',)
     filter_horizontal = ('publishers',)
