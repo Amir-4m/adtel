@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.utils import timezone
-from django.core.cache import cache
+from django.core.cache import cache, caches
 from django.db.models import Sum, Prefetch, Q
 from django.db.models.functions import Coalesce
 
@@ -10,7 +10,7 @@ from telegram import Bot
 from telegram.utils.request import Request
 from celery import shared_task
 
-from apps.telegram_adv.models import CampaignPublisher, Campaign, CampaignUser, CampaignContent, CampaignFile
+from apps.telegram_adv.models import CampaignPublisher, Campaign, CampaignUser, CampaignContent, CampaignFile, TelegramChannel
 from apps.telegram_bot.buttons import campaign_push_reply_markup
 from apps.push.models import PushText, CampaignPush, CampaignPushUser
 from apps.push.texts import SEND_CAMPAIGN_PUSH, SEND_SHOT_PUSH
@@ -71,11 +71,21 @@ def check_push_campaigns():
 
     for campaign in campaigns:
         # no reaction pushes should count as confirmed until user reject or expire
-        void_push_views = campaign.pushes.filter(
-            status=CampaignPush.STATUS_SENT,
+        campaign_push_users = CampaignPushUser.objects.filter(
+            campaign_push__campaign_id=campaign.id,
+            status=CampaignPushUser.STATUS_SENT
+        )
+
+        channel_list = []
+        for campaign_push_user in campaign_push_users:
+            channel_list += [*campaign_push_user.user.session.get('selected_channels', [])]
+
+        void_push_views = TelegramChannel.objects.filter(
+            id__in=channel_list
         ).aggregate(
-            views=Coalesce(Sum('publishers__view_efficiency'), 0)
+            views=Coalesce(Sum('view_efficiency'), 0)
         )['views']
+
         total_counted_views = campaign.confirmed_views + void_push_views
 
         if campaign.max_view > total_counted_views:
@@ -149,65 +159,59 @@ def send_push_to_user(campaign_push, users=None):
     :param users:
     :return:
     """
-    if isinstance(campaign_push, int):
-        campaign_push = CampaignPush.objects.select_related(
-            'campaign__file'
-        ).prefetch_related(
-            'users',
-            'publishers'
-        ).get(
-            id=campaign_push
-        )
-    elif not isinstance(campaign_push, CampaignPush):
+    if not isinstance(campaign_push, int):
         logger.error(f"send push campaign: failed, error: campaign_push arg is not a instance of CampaignPush ")
         return
+
+    campaign_push = CampaignPush.objects.select_related(
+        'campaign__file'
+    ).prefetch_related(
+        'users',
+        'publishers'
+    ).get(
+        id=campaign_push
+    )
+
     if not users:
         users = campaign_push.users.all()
 
-    kwargs = {
-        'caption': SEND_CAMPAIGN_PUSH.format(campaign_push.campaign.title),
-        'reply_markup': campaign_push_reply_markup(
-            campaign_push.id,
-            campaign_push.get_push_data(),
-        ),
-        'parse_mode': 'HTML',
-    }
     photo = campaign_push.campaign.file.get_file()
     for user in users:
+        campaign_push_user = CampaignPushUser.objects.create(
+            campaign_push=campaign_push,
+            user=user
+        )
         try:
+            kwargs = {
+                'caption': SEND_CAMPAIGN_PUSH.format(campaign_push.campaign.title),
+                'reply_markup': campaign_push_reply_markup(
+                    campaign_push_user,
+                ),
+                'parse_mode': 'HTML',
+            }
             response = bot.send_photo(user.user_id, photo, **kwargs)
-            CampaignPushUser.objects.filter(
-                campaign_push=campaign_push,
-                user=user,
-            ).update(
-                message_id=response.message_id
-            )
+            campaign_push_user.message_id = response.message_id
         except Exception as e:
-            campaign_push.status = CampaignPush.STATUS_FAILED
-            campaign_push.save()
+            campaign_push_user.status = CampaignPushUser.STATUS_FAILED
             logger.error(f"send push campaign: #{campaign_push.id} failed, error{e}")
+        campaign_push_user.save()
 
 
 @shared_task
 def check_expire_campaign_push():
     # TODO: re-check and test query
-    expired_campaign_pushes = CampaignPush.objects.prefetch_related(
-        'publisher__admins'
-    ).exclude(
-        status__in=(CampaignPush.STATUS_EXPIRED, CampaignPush.STATUS_REJECTED)
+    expired_campaign_pushes = CampaignPushUser.objects.select_related(
+        'campaign_push',
+        'user'
     ).filter(
-        created_time__lte=timezone.now() - timezone.timedelta(minutes=settings.EXPIRE_PUSH_MINUTE),
-        created_time__gte=timezone.now() - timezone.timedelta(minutes=2 * settings.EXPIRE_PUSH_MINUTE),
-        campaign__status=Campaign.STATUS_APPROVED,
-        campaign__is_enable=True,
+        status=CampaignPushUser.STATUS_SENT,
+        updated_time__gte=timezone.now() - timezone.timedelta(minutes=settings.EXPIRE_PUSH_MINUTE),
     )
 
-    expired_campaign_pushes_ids = list(expired_campaign_pushes.values_list('id', flat=True))
-    if expired_campaign_pushes_ids:
-        cancel_push.apply_async(
-            kwargs=dict(campaign_pushes=expired_campaign_pushes_ids),
-            countdown=1
-        )
+    cancel_push(
+        campaign_pushes=expired_campaign_pushes,
+        status=CampaignPushUser.STATUS_EXPIRED
+    )
 
 
 @shared_task
@@ -224,35 +228,21 @@ def cancel_push(**kwargs):
     """
 
     campaign_pushes = kwargs.get('campaign_pushes')
-    if isinstance(campaign_pushes, list):
-        status = CampaignPush.STATUS_EXPIRED
-        campaign_pushes_ids = campaign_pushes
-
-    else:  # user reject to get campaign
-        status = CampaignPush.STATUS_REJECTED
-        campaign_pushes_ids = [campaign_pushes]
-
-    campaign_pushes = CampaignPush.objects.prefetch_related(
-        'user_pushes__user'
-    ).filter(
-        id__in=campaign_pushes_ids,
-    )
+    status = kwargs.get('status')
+    if not isinstance(campaign_pushes, list):
+        campaign_pushes = [campaign_pushes]
 
     for campaign_push in campaign_pushes:
-
-        if campaign_push.status != CampaignPush.STATUS_RECEIVED:
-            campaign_push.status = status
-
-        for user_push in campaign_push.user_pushes.filter(message_id__isnull=False):
-            try:
+        try:
+            if campaign_push.message_id is not None:
                 bot.delete_message(
-                    user_push.user.user_id,
-                    user_push.message_id
+                    campaign_push.user.user_id,
+                    campaign_push.message_id
                 )
-            except Exception as e:
-                logger.error(f"delete push: {campaign_push} failed, error: {e}")
-
-    CampaignPush.objects.bulk_update(campaign_pushes, fields=['updated_time', 'status'])
+            campaign_push.status = status
+            campaign_push.save(update_fields=['updated_time', 'status'])
+        except Exception as e:
+            logger.error(f"delete push: {campaign_push} failed, error: {e}")
 
 
 @shared_task

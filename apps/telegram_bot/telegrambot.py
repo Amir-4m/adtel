@@ -5,7 +5,7 @@ from telegram.ext.dispatcher import run_async
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 
-from apps.push.models import CampaignPush
+from apps.push.models import CampaignPush, CampaignPushUser
 from apps.telegram_adv.models import TelegramChannel, BankAccount
 from apps.telegram_user.models import TelegramUser
 from apps.push.tasks import cancel_push
@@ -113,8 +113,8 @@ def push_campaign_management(bot, update, session):
         selected_channels = session['selected_channels']
 
         if data.startswith('push_campaign_get'):
-            _p, _c, _g, campaign_push_id = data.split('_')
-            selected_channels = session['selected_channels'].get(campaign_push_id)
+            _p, _c, _g, campaign_push_user_id = data.split('_')
+            selected_channels = session['selected_channels'].get(campaign_push_user_id)
             if not selected_channels:
                 bot.answer_callback_query(
                     update.callback_query.id,
@@ -122,24 +122,29 @@ def push_campaign_management(bot, update, session):
                 )
 
             else:
-                _p, _c, _g, campaign_push_id = data.split('_')
-                session[f'push_data_{campaign_push_id}'] = []
+                _p, _c, _g, campaign_push_user_id = data.split('_')
+                session[f'push_data_{campaign_push_user_id}'] = []
                 functions.select_campaign_push_to_send(
                     update,
                     bot,
-                    campaign_push_id,
+                    campaign_push_user_id,
                     update.effective_user.id,
-                    session['selected_channels'][campaign_push_id]
+                    session['selected_channels'][campaign_push_user_id]
                 )
-                session['selected_channels'][campaign_push_id] = []
+                session['selected_channels'][campaign_push_user_id] = []
 
         elif data.startswith('push_campaign_cancel'):
-            _p, _ch, _c, campaign_push_id = data.split('_')
-            selected_channels = session['selected_channels'].get(campaign_push_id, None)
+            _p, _ch, _c, campaign_push_user_id = data.split('_')
+            selected_channels = session['selected_channels'].get(campaign_push_user_id, None)
             if selected_channels:
-                session['selected_channels'][campaign_push_id] = []
-            session[f'push_data_{campaign_push_id}'] = []
-            cancel_push(campaign_pushes=campaign_push_id)
+                session['selected_channels'][campaign_push_user_id] = []
+            session[f'push_data_{campaign_push_user_id}'] = []
+            try:
+                campaign_push_user = CampaignPushUser.objects.get(id=campaign_push_user_id)
+            except CampaignPushUser.DoesNotExist:
+                logging.error(f'campaign push user for campaign push {campaign_push_user_id} does not exists.')
+                return
+            cancel_push(campaign_pushes=campaign_push_user, status=CampaignPushUser.STATUS_REJECTED)
 
         elif data.startswith('push_campaign_sheba'):
             bot.answer_callback_query(
@@ -149,10 +154,11 @@ def push_campaign_management(bot, update, session):
 
         # check clicked channel to add or not, not if sheba or tariff is not match
         else:
-            _p, campaign_push_id, channel_id, tariff = data.split('_')
-            selected_channels = selected_channels.setdefault(campaign_push_id, [])
-            session[f'push_data_{campaign_push_id}'] = CampaignPush.objects.get(id=campaign_push_id).get_push_data()
-            push_data = session[f'push_data_{campaign_push_id}']
+            _p, campaign_push_user_id, channel_id, tariff = data.split('_')
+            campaign_push_user = CampaignPushUser.objects.select_related('campaign_push').get(id=campaign_push_user_id)
+            selected_channels = selected_channels.setdefault(campaign_push_user_id, [])
+            session[f'push_data_{campaign_push_user_id}'] = campaign_push_user.get_push_data()
+            push_data = session[f'push_data_{campaign_push_user_id}']
             channel_id = int(channel_id)
             if not selected_channels:
                 selected_channels.append({'id': channel_id, 'tariff': tariff})
@@ -182,8 +188,7 @@ def push_campaign_management(bot, update, session):
 
             update.callback_query.edit_message_reply_markup(
                 reply_markup=buttons.campaign_push_reply_markup(
-                    campaign_push_id,
-                    push_data,
+                    campaign_push_user,
                     selected_channels
                 )
             )

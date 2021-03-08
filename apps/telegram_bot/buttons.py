@@ -88,18 +88,17 @@ def add_sheba_button():
     return to_send
 
 
-def campaign_push_reply_markup(campaign_push_id, sheba_channel_ids, selected_channels=()):
+def campaign_push_reply_markup(campaign_push_user, selected_channels=()):
     buttons = []
     _selected_channels_ids = {int(x["id"]) for x in selected_channels}
-
-    for sheba, channels_info in sheba_channel_ids.items():
+    for sheba, channels_info in campaign_push_user.get_push_data().items():
         for channel_info in channels_info:
             if channel_info["id"] in _selected_channels_ids:
                 text = f'{channel_info["tag"]} _ {convert_en_numbers(channel_info["tariff"])} کایی ✅'
             else:
                 text = f'{channel_info["tag"]} _ {convert_en_numbers(channel_info["tariff"])} کایی '
 
-            callback_data = f'push_{campaign_push_id}_{channel_info["id"]}_{channel_info["tariff"]}'
+            callback_data = f'push_{campaign_push_user.id}_{channel_info["id"]}_{channel_info["tariff"]}'
             buttons.append([InlineKeyboardButton(text=text, callback_data=callback_data)])
 
         buttons.append(
@@ -108,8 +107,8 @@ def campaign_push_reply_markup(campaign_push_id, sheba_channel_ids, selected_cha
 
     buttons.append(
         [
-            InlineKeyboardButton(text=f'نمی خوام ❌', callback_data=f'push_campaign_cancel_{campaign_push_id}'),
-            InlineKeyboardButton(text=f'دریافت 📥', callback_data=f'push_campaign_get_{campaign_push_id}')
+            InlineKeyboardButton(text=f'نمی خوام ❌', callback_data=f'push_campaign_cancel_{campaign_push_user.id}'),
+            InlineKeyboardButton(text=f'دریافت 📥', callback_data=f'push_campaign_get_{campaign_push_user.id}')
         ]
     )
     return InlineKeyboardMarkup(buttons)

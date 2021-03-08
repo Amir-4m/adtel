@@ -1,9 +1,9 @@
+from django.core.cache import caches
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from apps.utils.url_encoder import UrlEncoder
 from apps.telegram_adv.models import TelegramAgent
-
 
 url_encoder = UrlEncoder()
 
@@ -31,6 +31,12 @@ class TelegramUser(models.Model):
     @property
     def full_name(self):
         return f'{self.first_name} {self.last_name}'.strip()
+
+    @property
+    def session(self):
+        session_cache = caches['session']
+        ck = f'telegram_user_session_{self.user_id}'
+        return session_cache.get(ck, {})
 
     def url_encode(self):
         return url_encoder.encode_id(self.user_id)
