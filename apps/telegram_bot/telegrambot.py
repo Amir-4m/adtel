@@ -144,7 +144,11 @@ def push_campaign_management(bot, update, session):
             except CampaignPushUser.DoesNotExist:
                 logging.error(f'campaign push user for campaign push {campaign_push_user_id} does not exists.')
                 return
-            cancel_push(campaign_pushes=campaign_push_user, status=CampaignPushUser.STATUS_REJECTED)
+            if campaign_push_user.status == CampaignPushUser.STATUS_RECEIVED:
+                status = CampaignPushUser.STATUS_RECEIVED
+            else:
+                status = CampaignPushUser.STATUS_REJECTED
+            cancel_push(campaign_pushes=campaign_push_user, status=status)
 
         elif data.startswith('push_campaign_sheba'):
             bot.answer_callback_query(
