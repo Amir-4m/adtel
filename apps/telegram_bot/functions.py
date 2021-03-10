@@ -513,12 +513,12 @@ def update_push_inlines(bot, campaign_push_user, excluded_user_id):
     :return:
     """
     campaign_push = campaign_push_user.campaign_push
-    if campaign_push.has_push_data():
+
+    if campaign_push_user.has_push_data():
         reply_markup = buttons.campaign_push_reply_markup(
             campaign_push_user,
         )
         method = bot.edit_message_reply_markup
-
     else:
         reply_markup = None
         method = bot.delete_message
