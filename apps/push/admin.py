@@ -141,6 +141,7 @@ class PushUserInline(admin.TabularInline):
 
     def is_delivered(self, obj):
         return obj.is_delivered()
+
     is_delivered.boolean = True
 
 
@@ -163,4 +164,5 @@ class PushCampaignAdmin(admin.ModelAdmin):
 
     def is_delivered(self, obj):
         return obj.is_delivered()
+
     is_delivered.boolean = True
