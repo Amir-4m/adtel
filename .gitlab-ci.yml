@@ -8,3 +8,8 @@ variables:
     - django
     - production
     - foreign
+    
+test:
+  extends:
+    - .test
+    - .production

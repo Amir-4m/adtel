@@ -116,7 +116,7 @@ def upload_file(obj_id, push=False):
         file_id = grab_file_id(bot_response, file_type)
         model.objects.filter(id=obj_id).update(telegram_file_hash=file_id)
     except Exception as e:
-        logger.error(f"upload {model_file}: {obj_id} failed, error: {e}")
+        logger.error(f"upload file {model_file}: {obj_id} failed with chat id {settings.BOT_VIEW_CHANNEL_ID}, error: {e}")
 
 
 @shared_task
