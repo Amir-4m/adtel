@@ -10,7 +10,8 @@ from telegram import Bot
 from telegram.utils.request import Request
 from celery import shared_task
 
-from apps.telegram_adv.models import CampaignPublisher, Campaign, CampaignUser, CampaignContent, CampaignFile, TelegramChannel
+from apps.telegram_adv.models import CampaignPublisher, Campaign, CampaignUser, CampaignContent, CampaignFile, \
+    TelegramChannel
 from apps.telegram_bot.buttons import campaign_push_reply_markup
 from apps.push.models import PushText, CampaignPush, CampaignPushUser
 from apps.push.texts import SEND_CAMPAIGN_PUSH, SEND_SHOT_PUSH
@@ -68,7 +69,6 @@ def check_push_campaigns():
     ).annotate(
         confirmed_views=Coalesce(Sum('campaignuser__channels__view_efficiency'), 0)
     )
-
     for campaign in campaigns:
         # no reaction pushes should count as confirmed until user reject or expire
         campaign_push_users = CampaignPushUser.objects.filter(
@@ -84,8 +84,7 @@ def check_push_campaigns():
             id__in=channel_list
         ).aggregate(
             views=Coalesce(Sum('view_efficiency'), 0)
-        )['views']
-
+        )['views'] or 0
         total_counted_views = campaign.confirmed_views + void_push_views
 
         if campaign.max_view > total_counted_views:
@@ -142,9 +141,8 @@ def generate_campaign_push(campaign_id, campaign_remain_views):
         campaign_push.users.set(users)
         campaign_push.publishers.set(channels)
 
-        send_push_to_user.apply_async(
-            args=(campaign_push.id,),
-            countdown=i * 5
+        send_push_to_user(
+            campaign_push.id,
         )
 
 
@@ -174,10 +172,8 @@ def send_push_to_user(campaign_push, users=None):
 
     if not users:
         users = campaign_push.users.all()
-
-    photo = campaign_push.campaign.file.get_file()
     for user in users:
-        campaign_push_user = CampaignPushUser.objects.create(
+        campaign_push_user, _created = CampaignPushUser.objects.get_or_create(
             campaign_push=campaign_push,
             user=user
         )
@@ -189,6 +185,7 @@ def send_push_to_user(campaign_push, users=None):
                 ),
                 'parse_mode': 'HTML',
             }
+            photo = campaign_push.campaign.file.get_file()
             response = bot.send_photo(user.user_id, photo, **kwargs)
             campaign_push_user.message_id = response.message_id
         except Exception as e:
@@ -209,7 +206,7 @@ def check_expire_campaign_push():
     )
 
     cancel_push(
-        campaign_pushes=expired_campaign_pushes,
+        campaign_pushes=list(expired_campaign_pushes),
         status=CampaignPushUser.STATUS_EXPIRED
     )
 
@@ -231,7 +228,6 @@ def cancel_push(**kwargs):
     status = kwargs.get('status')
     if not isinstance(campaign_pushes, list):
         campaign_pushes = [campaign_pushes]
-
     for campaign_push in campaign_pushes:
         try:
             if campaign_push.message_id is not None:

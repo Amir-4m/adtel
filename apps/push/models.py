@@ -80,7 +80,7 @@ class CampaignPushUser(models.Model):
 class CampaignPush(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
-    status = models.SmallIntegerField(_('status'), blank=True, editable=False)
+    status = models.SmallIntegerField(_('status'), blank=True, null=True, editable=False)
 
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="pushes")
     users = models.ManyToManyField(TelegramUser, through=CampaignPushUser)

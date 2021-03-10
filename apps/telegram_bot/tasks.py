@@ -130,11 +130,12 @@ def get_files_id(campaign_content_id, channel_id, admin_id, file_type, from_msg_
     with TelegramClient(StringSession(admin.session), admin.api_id, admin.api_hash, proxy=TELETHON_PROXY) as client:
         client.session.save_entities = False
         client.flood_sleep_threshold = 0
-        messages = client.iter_messages(channel.chat_id, min_id=max(from_msg_id-1, 1), max_id=to_msg_id+1)
+        messages = client.iter_messages(channel.chat_id, min_id=max(from_msg_id - 1, 1), max_id=to_msg_id + 1)
         for message in messages:
             try:
                 file_id = pack_bot_file_id(message.media)
-                if not CampaignFile.objects.filter(campaign_content=campaign_content, telegram_file_hash=file_id).exists():
+                if not CampaignFile.objects.filter(campaign_content=campaign_content,
+                                                   telegram_file_hash=file_id).exists():
                     campaign_files.append(
                         CampaignFile(
                             name=f"{campaign_content.display_text} {file_type} {message.id}",
@@ -256,11 +257,14 @@ def read_campaign_posts_views(campaign_posts, log_mode=True, update_views=False)
                             banner_views=banner_views,
                         )
                     )
-                logger.info(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id}")
+                logger.info(
+                    f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id}")
             except FloodWaitError as e:
-                logger.warning(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id} failed, error: {e}")
+                logger.warning(
+                    f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id} failed, error: {e}")
             except Exception as e:
-                logger.error(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id} failed, error: {e}")
+                logger.error(
+                    f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id} failed, error: {e}")
 
         adm_ts.session = client.session.save()
         adm_ts.save()
@@ -388,7 +392,8 @@ def receive_shot(telegram_user_id, file_id, campaign_post_id):
 
             campaign_post.save(update_fields=update_fields)
 
-        agent.send_message(telegram_user_id, texts.SEND_SHOT_SUCCESS, reply_markup=buttons.back_button("back_to_campaign"))
+        agent.send_message(telegram_user_id, texts.SEND_SHOT_SUCCESS,
+                           reply_markup=buttons.back_button("back_to_campaign"))
     except Exception as e:
         logger.error(msg=f'receive shot failed, error: {e}')
         agent.send_message(telegram_user_id, texts.SEND_SHOT_ERROR, reply_markup=buttons.start_buttons())
@@ -725,13 +730,12 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
         )
     agent.send_message(chat_id=user.user_id, text=user_message)
     campaign_user.channels.set(campaign_push.publishers.filter(id__in=channels))
-
     # update campaign push status
     campaign_push_user.status = CampaignPushUser.STATUS_RECEIVED
     campaign_push_user.save(update_fields=['updated_time', 'status'])
 
     # if user has channels to get this campaign push again
-    if campaign_push.has_push_data():
+    if campaign_push_user.has_push_data():
         send_push_to_user(campaign_push, users=(user,))
 
     # functions.check_send_push_again(campaign_push_id)

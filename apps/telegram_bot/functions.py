@@ -49,7 +49,6 @@ def refresh_session(bot, update, session=None, clear=False):
         return session
 
     _session = session_cache.get(ck)
-
     if _session is None:
         user, created = TelegramUser.objects.get_or_create(
             user_id=user_info.id,
@@ -499,7 +498,7 @@ def select_campaign_push_to_send(update, bot, campaign_push_user_id, user_id, se
                 logger.error(f"render campaign: {campaign_push.campaign_id} for :{user_id} failed, error: {e}")
 
         # update inline messages in other admins chat expect this user
-        update_push_inlines(bot, campaign_push, user_id)
+        update_push_inlines(bot, campaign_push_user, user_id)
 
 
 def update_push_inlines(bot, campaign_push_user, excluded_user_id):
