@@ -82,7 +82,7 @@ def test_create_campaign(campaign):
     )
     test_channel.admins.add(test_user)
     campaign_push.publishers.add(test_channel)
-    CampaignPushUser.objects.create(
+    campaign_push_user = CampaignPushUser.objects.create(
         campaign_push=campaign_push,
         user=test_user,
         message_id=1997
@@ -90,7 +90,7 @@ def test_create_campaign(campaign):
 
     try:
         render_campaign(
-            campaign_push,
+            campaign_push_user,
             test_user.user_id,
             test_user.telegramchannel_set.values_list('id', flat=True),
             2000

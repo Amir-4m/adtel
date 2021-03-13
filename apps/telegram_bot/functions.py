@@ -16,7 +16,7 @@ from django.forms.models import model_to_dict
 from . import texts
 from . import buttons
 from apps.telegram_bot.tasks import render_campaign
-from apps.push.models import CampaignPush
+from apps.push.models import CampaignPush, CampaignPushUser
 from apps.telegram_user.models import TelegramUser
 from apps.utils.url_encoder import UrlEncoder
 from apps.telegram_adv.models import (
@@ -49,7 +49,6 @@ def refresh_session(bot, update, session=None, clear=False):
         return session
 
     _session = session_cache.get(ck)
-
     if _session is None:
         user, created = TelegramUser.objects.get_or_create(
             user_id=user_info.id,
@@ -453,12 +452,13 @@ def remove_user_from_channel(update, session):
 
 # new functions
 
-def select_campaign_push_to_send(update, bot, campaign_push_id, user_id, selected_channels):
+def select_campaign_push_to_send(update, bot, campaign_push_user_id, user_id, selected_channels):
     """
         try to send a campaign to user in transaction atomic to avoid of conflicts
         if two admin click on get campaign in same time just one of them should get banner.
         and for other get and warning answer and inline will update in their chats
     """
+    campaign_push_user = CampaignPushUser.objects.get(pk=campaign_push_user_id)
     with transaction.atomic():
         selected_channels_ids = [ch['id'] for ch in selected_channels]
         campaign_push = CampaignPush.objects.select_for_update().prefetch_related(
@@ -470,7 +470,7 @@ def select_campaign_push_to_send(update, bot, campaign_push_id, user_id, selecte
         ).select_related(
             'campaign'
         ).get(
-            id=campaign_push_id
+            pk=campaign_push_user.campaign_push_id
         )
 
         # check for concurrency conflict
@@ -493,32 +493,32 @@ def select_campaign_push_to_send(update, bot, campaign_push_id, user_id, selecte
             )
             tariff = selected_channels[0]['tariff']
             try:
-                render_campaign(campaign_push, user_id, selected_channels_ids, tariff)
+                render_campaign(campaign_push_user, user_id, selected_channels_ids, tariff)
             except Exception as e:
                 logger.error(f"render campaign: {campaign_push.campaign_id} for :{user_id} failed, error: {e}")
 
         # update inline messages in other admins chat expect this user
-        update_push_inlines(bot, campaign_push, user_id)
+        update_push_inlines(bot, campaign_push_user, user_id)
 
 
-def update_push_inlines(bot, campaign_push, excluded_user_id):
+def update_push_inlines(bot, campaign_push_user, excluded_user_id):
     """
         update inline of push in admins chats
         if has any other channels to select edit reply_markup
         else delete all messages from all admins chats
 
     :param bot:
-    :param campaign_push:
+    :param campaign_push_user:
     :param excluded_user_id:
     :return:
     """
-    if campaign_push.has_push_data():
-        reply_markup = buttons.campaign_push_reply_markup(
-                campaign_push.id,
-                campaign_push.get_push_data(),
-            )
-        method = bot.edit_message_reply_markup
+    campaign_push = campaign_push_user.campaign_push
 
+    if campaign_push_user.has_push_data():
+        reply_markup = buttons.campaign_push_reply_markup(
+            campaign_push_user,
+        )
+        method = bot.edit_message_reply_markup
     else:
         reply_markup = None
         method = bot.delete_message

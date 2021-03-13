@@ -21,7 +21,7 @@ from . import texts, buttons
 from apps.utils.url_encoder import UrlEncoder
 from apps.utils.html import filter_escape
 from apps.telegram_bot.exceptions import ShortLinkError
-from apps.push.models import PushText, CampaignPush
+from apps.push.models import PushText, CampaignPush, CampaignPushUser
 from apps.push.tasks import send_push_to_user
 from apps.tel_tools.models import TelegramSession
 from apps.telegram_adv.models import (
@@ -257,11 +257,14 @@ def read_campaign_posts_views(campaign_posts, log_mode=True, update_views=False)
                             banner_views=banner_views,
                         )
                     )
-                logger.info(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id}")
+                logger.info(
+                    f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id}")
             except FloodWaitError as e:
-                logger.warning(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id} failed, error: {e}")
+                logger.warning(
+                    f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id} failed, error: {e}")
             except Exception as e:
-                logger.error(f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id} failed, error: {e}")
+                logger.error(
+                    f"read view for post: {campaign_post.id} and campaign: {campaign_post.campaign_content.campaign_id} failed, error: {e}")
 
         adm_ts.session = client.session.save()
         adm_ts.save()
@@ -654,7 +657,8 @@ def create_system_message(campaign, channels_list):
 
 
 @shared_task
-def render_campaign(campaign_push, user_id, channels, tariff):
+def render_campaign(campaign_push_user, user_id, channels, tariff):
+    campaign_push = campaign_push_user.campaign_push
     user = campaign_push.users.get(user_id=user_id)
     campaign_contents = list(campaign_push.campaign.contents.order_by('id'))
     sheba = campaign_push.publishers.first().sheba
@@ -726,14 +730,12 @@ def render_campaign(campaign_push, user_id, channels, tariff):
         )
     agent.send_message(chat_id=user.user_id, text=user_message)
     campaign_user.channels.set(campaign_push.publishers.filter(id__in=channels))
-
     # update campaign push status
-    if campaign_push.status != CampaignPush.STATUS_RECEIVED:
-        campaign_push.status = CampaignPush.STATUS_RECEIVED
-        campaign_push.save(update_fields=['updated_time', 'status'])
+    campaign_push_user.status = CampaignPushUser.STATUS_RECEIVED
+    campaign_push_user.save(update_fields=['updated_time', 'status'])
 
     # if user has channels to get this campaign push again
-    if campaign_push.has_push_data():
+    if campaign_push_user.has_push_data():
         send_push_to_user(campaign_push, users=(user,))
 
     # functions.check_send_push_again(campaign_push_id)
