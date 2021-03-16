@@ -202,7 +202,7 @@ def check_expire_campaign_push():
         'user'
     ).filter(
         status=CampaignPushUser.STATUS_SENT,
-        updated_time__gte=timezone.now() - timezone.timedelta(minutes=settings.EXPIRE_PUSH_MINUTE),
+        updated_time__lte=timezone.now() - timezone.timedelta(minutes=settings.EXPIRE_PUSH_MINUTE),
     )
 
     cancel_push(
