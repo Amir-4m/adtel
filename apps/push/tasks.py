@@ -157,21 +157,23 @@ def send_push_to_user(campaign_push, users=None):
     :param users:
     :return:
     """
-    if not isinstance(campaign_push, int):
+    if isinstance(campaign_push, int):
+        campaign_push = CampaignPush.objects.select_related(
+            'campaign__file'
+        ).prefetch_related(
+            'users',
+            'publishers'
+        ).get(
+            id=campaign_push
+        )
+
+    elif not isinstance(campaign_push, CampaignPush):
         logger.error(f"send push campaign: failed, error: campaign_push arg is not a instance of CampaignPush ")
         return
 
-    campaign_push = CampaignPush.objects.select_related(
-        'campaign__file'
-    ).prefetch_related(
-        'users',
-        'publishers'
-    ).get(
-        id=campaign_push
-    )
-
     if not users:
         users = campaign_push.users.all()
+
     for user in users:
         campaign_push_user, _created = CampaignPushUser.objects.get_or_create(
             campaign_push=campaign_push,
