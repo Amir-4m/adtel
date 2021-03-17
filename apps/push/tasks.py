@@ -8,6 +8,7 @@ from django.db.models.functions import Coalesce
 
 from telegram import Bot
 from telegram.utils.request import Request
+from telegram.error import BadRequest
 from celery import shared_task
 
 from apps.telegram_adv.models import CampaignPublisher, Campaign, CampaignUser, CampaignContent, CampaignFile, \
@@ -238,9 +239,14 @@ def cancel_push(**kwargs):
                     campaign_push.message_id
                 )
             campaign_push.status = status
-            campaign_push.save(update_fields=['updated_time', 'status'])
+
         except Exception as e:
             logger.error(f"delete push: {campaign_push} failed, error_type:{type(e)}, error: {e}")
+
+            if isinstance(e, BadRequest):
+                campaign_push.message_id = None
+
+        campaign_push.save()
 
 
 @shared_task
