@@ -526,10 +526,11 @@ def update_push_inlines(bot, campaign_push_user, excluded_user_id):
 
     for user_push in campaign_push.user_pushes.exclude(user__user_id=excluded_user_id):
         try:
-            method(
-                chat_id=user_push.user.user_id,
-                message_id=user_push.message_id,
-                reply_markup=reply_markup
-            )
+            if user_push.message_id:
+                method(
+                    chat_id=user_push.user.user_id,
+                    message_id=user_push.message_id,
+                    reply_markup=reply_markup
+                )
         except Exception as e:
             logger.error(f"change in user: {user_push.user.user_id} failed, error: {e}")
