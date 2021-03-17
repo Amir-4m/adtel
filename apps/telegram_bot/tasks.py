@@ -736,6 +736,7 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
     agent.send_message(chat_id=user.user_id, text=user_message)
     campaign_user.channels.set(campaign_push.publishers.filter(id__in=channels))
     # update campaign push status
+    logger.debug(f'[render_campaign: setting campaign push user status]-[campaign_push_user: {campaign_push_user.id}]')
     campaign_push_user.status = CampaignPushUser.STATUS_RECEIVED
     campaign_push_user.save(update_fields=['updated_time', 'status'])
 
