@@ -240,7 +240,7 @@ def cancel_push(**kwargs):
             campaign_push.status = status
             campaign_push.save(update_fields=['updated_time', 'status'])
         except Exception as e:
-            logger.error(f"delete push: {campaign_push} failed, error: {e}")
+            logger.error(f"delete push: {campaign_push} failed, error_type:{type(e)}, error: {e}")
 
 
 @shared_task
