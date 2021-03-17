@@ -215,7 +215,7 @@ def check_expire_campaign_push():
 
 
 @shared_task
-def cancel_push(**kwargs):
+def cancel_push(campaign_pushes, status):
     """
         cancel sent pushes to users in to different way:
             1 - user reject to get campaign  status ---> rejected
@@ -227,10 +227,9 @@ def cancel_push(**kwargs):
     :return:
     """
 
-    campaign_pushes = kwargs.get('campaign_pushes')
-    status = kwargs.get('status')
     if not isinstance(campaign_pushes, list):
         campaign_pushes = [campaign_pushes]
+
     for campaign_push in campaign_pushes:
         try:
             if campaign_push.message_id is not None:
@@ -239,14 +238,14 @@ def cancel_push(**kwargs):
                     campaign_push.message_id
                 )
             campaign_push.status = status
+            campaign_push.save()
+        except BadRequest as e:
+            logger.warning(f"delete push: {campaign_push} failed, error: {e}")
+            campaign_push.message_id = None
+            campaign_push.save()
 
         except Exception as e:
             logger.error(f"delete push: {campaign_push} failed, error_type:{type(e)}, error: {e}")
-
-            if isinstance(e, BadRequest):
-                campaign_push.message_id = None
-
-        campaign_push.save()
 
 
 @shared_task

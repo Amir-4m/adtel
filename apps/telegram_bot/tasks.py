@@ -365,7 +365,7 @@ def log_short_links():
                     ip_count=result['ip_count']
                 )
             )
-            logger.info(msg=f'Number of clicks for ({short_link.reference_id}) reference_id is {result["hit_count"]}')
+            logger.debug(msg=f'Number of clicks for ({short_link.reference_id}) reference_id is {result["hit_count"]}')
 
     ShortLinkLog.objects.bulk_create(short_links_logs)
 
