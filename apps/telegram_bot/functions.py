@@ -491,6 +491,7 @@ def select_campaign_push_to_send(update, bot, campaign_push_user_id, user_id, se
                 update.effective_user.id,
                 update.callback_query.message.message_id
             )
+            # TODO: TARIFF SHOULD NOT BE FIRST INDEX, SHOULD BE MIN OR MAX OR AVERAGE
             tariff = selected_channels[0]['tariff']
             try:
                 render_campaign(campaign_push_user, user_id, selected_channels_ids, tariff)
