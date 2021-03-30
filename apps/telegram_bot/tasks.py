@@ -674,6 +674,7 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
     )
 
     campaign_posts = []
+    campaign_post = None
     for campaign_content in campaign_contents:
         if campaign_content.post_link:
             logger.debug(f'[render_campaign: sending post link message]-[campaign_content: {campaign_content.id}]-[user_id: {user.user_id}]')
@@ -718,11 +719,12 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
         campaign_push.campaign,
         campaign_push.publishers.filter(id__in=channels)
     )
-    logger.debug(f'[render_campaign: sending system message]-[chat_id: {campaign_post.campaign_content.mother_channel.get_id_or_tag}]')
-    agent.send_message(
-        chat_id=campaign_post.campaign_content.mother_channel.get_id_or_tag,
-        text=system_message
-    )
+    if campaign_post:
+        logger.debug(f'[render_campaign: sending system message]-[chat_id: {campaign_post.campaign_content.mother_channel.get_id_or_tag}]')
+        agent.send_message(
+            chat_id=campaign_post.campaign_content.mother_channel.get_id_or_tag,
+            text=system_message
+        )
 
     # forward banners and send system message to user
     for campaign_post in campaign_posts:
