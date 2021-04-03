@@ -675,20 +675,8 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
 
     campaign_posts = []
     campaign_post = None
+
     for campaign_content in campaign_contents:
-
-        mother_channel = campaign_content.mother_channel.get_id_or_tag
-
-        banner_id, short_links_ids, campaign_file = render_campaign_content(
-            campaign_content,
-            user,
-            mother_channel,
-            campaign_user.id
-        )
-        if campaign_content.view_type == campaign_content.TYPE_VIEW_TOTAL and not campaign_content.message_id:
-            campaign_content.message_id = banner_id
-            campaign_content.save(update_fields=['updated_time', 'message_id'])
-
         if campaign_content.post_link:
             logger.debug(f'[render_campaign: sending post link message]-[campaign_content: {campaign_content.id}]-[user_id: {user.user_id}]')
             try:
@@ -701,8 +689,15 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
                 logger.error(
                     f'[render_campaign: sending post link message failed]-[campaign_content: {campaign_content.id}]-[user_id: {user.user_id}][exc: {e}]'
                 )
-            continue
+                continue
+        mother_channel = campaign_content.mother_channel.get_id_or_tag
 
+        banner_id, short_links_ids, campaign_file = render_campaign_content(
+            campaign_content,
+            user,
+            mother_channel,
+            campaign_user.id
+        )
         campaign_post = CampaignPost.objects.create(
             campaign_content=campaign_content,
             campaign_user=campaign_user,
@@ -718,6 +713,9 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
             ).update(
                 campaign_post=campaign_post
             )
+        if campaign_content.view_type == campaign_content.TYPE_VIEW_TOTAL and not campaign_content.message_id:
+            campaign_content.message_id = banner_id
+            campaign_content.save(update_fields=['updated_time', 'message_id'])
 
     # create message that define for CRM which channels got this campaign
     # and append the role of forward and sharing contents
