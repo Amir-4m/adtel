@@ -1,5 +1,6 @@
 import logging
 import datetime
+import re
 
 from khayyam import JalaliDatetime, JalaliDate
 from persian import convert_en_numbers
@@ -531,6 +532,15 @@ def update_push_inlines(bot, campaign_push_user, excluded_user_id):
                     chat_id=user_push.user.user_id,
                     message_id=user_push.message_id,
                     reply_markup=reply_markup
+
                 )
         except Exception as e:
             logger.error(f"change in user: {user_push.user.user_id} failed, error: {e}")
+
+
+def retrieve_message_info(post_link):
+    pattern = re.compile(r'https?://t\.me/(c\/)?([^\/]+)/(\d+)')
+    match = pattern.match(post_link)
+    chat_id = f'@{match.groups()[1]}'
+    message_id = int(match.groups()[2])
+    return chat_id, message_id

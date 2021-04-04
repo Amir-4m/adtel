@@ -682,9 +682,12 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
         if campaign_content.post_link and not campaign_content.message_id:
             logger.debug(f'[render_campaign: sending post link message]-[campaign_content: {campaign_content.id}]-[user_id: {user.user_id}]')
             try:
-                res = agent.send_message(
+                from .functions import retrieve_message_info
+                chat_id, message_id = retrieve_message_info(campaign_content.post_link)
+                res = agent.forward_message(
                     chat_id=mother_channel,
-                    text=texts.POST_LINK_CONTENT.format(campaign_content.post_link),
+                    from_chat_id=chat_id,
+                    message_id=message_id,
                     disable_web_page_preview=True
                 )
                 campaign_content.message_id = res['message_id']
