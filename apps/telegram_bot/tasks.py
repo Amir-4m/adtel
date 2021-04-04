@@ -677,20 +677,23 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
     campaign_post = None
 
     for campaign_content in campaign_contents:
-        if campaign_content.post_link:
+        mother_channel = campaign_content.mother_channel.get_id_or_tag
+
+        if campaign_content.post_link and not campaign_content.message_id:
             logger.debug(f'[render_campaign: sending post link message]-[campaign_content: {campaign_content.id}]-[user_id: {user.user_id}]')
             try:
-                agent.send_message(
-                    chat_id=user.user_id,
+                res = agent.send_message(
+                    chat_id=mother_channel,
                     text=texts.POST_LINK_CONTENT.format(campaign_content.post_link),
                     disable_web_page_preview=True
                 )
+                campaign_content.message_id = res['message_id']
+                campaign_content.save()
             except Exception as e:
                 logger.error(
                     f'[render_campaign: sending post link message failed]-[campaign_content: {campaign_content.id}]-[user_id: {user.user_id}][exc: {e}]'
                 )
                 continue
-        mother_channel = campaign_content.mother_channel.get_id_or_tag
 
         banner_id, short_links_ids, campaign_file = render_campaign_content(
             campaign_content,
