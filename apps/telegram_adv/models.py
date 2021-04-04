@@ -278,7 +278,7 @@ class CampaignContent(models.Model):
     created_time = models.DateTimeField(_('created time'), auto_now_add=True)
     updated_time = models.DateTimeField(_('updated time'), auto_now=True)
     display_text = models.CharField(_('display text'), max_length=150)
-    content = models.TextField(_('content'), blank=True, null=True)
+    content = models.TextField(_('content'), blank=True)
     extra_data = JSONField(default=dict, editable=False)
     view_type = models.CharField(_('view type'), max_length=7, choices=VIEW_TYPES)
     message_id = models.PositiveIntegerField(_('message id'), null=True, blank=True)
