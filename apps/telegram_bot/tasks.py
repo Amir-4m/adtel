@@ -116,7 +116,8 @@ def upload_file(obj_id, push=False):
         file_id = grab_file_id(bot_response, file_type)
         model.objects.filter(id=obj_id).update(telegram_file_hash=file_id)
     except Exception as e:
-        logger.error(f"upload file {model_file}: {obj_id} failed with chat id {settings.BOT_VIEW_CHANNEL_ID}, error: {e}")
+        logger.error(
+            f"upload file {model_file}: {obj_id} failed with chat id {settings.BOT_VIEW_CHANNEL_ID}, error: {e}")
 
 
 @shared_task
@@ -619,7 +620,8 @@ def render_campaign_content(campaign_content, user, mother_channel, campaign_use
     )
 
     method = context.pop('method')
-    logger.debug(f'[render_campaign_content: setting bot method]-[method: {method}]-[campaign_content: {campaign_content.id}]-[user: {user.user_id}')
+    logger.debug(
+        f'[render_campaign_content: setting bot method]-[method: {method}]-[campaign_content: {campaign_content.id}]-[user: {user.user_id}')
     if method == bot.forward_message:
         return campaign_content.message_id, short_links_ids, None
 
@@ -674,34 +676,22 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
     )
 
     campaign_posts = []
+    mother_channel = None
     for campaign_content in campaign_contents:
         mother_channel = campaign_content.mother_channel.get_id_or_tag
 
-        if campaign_content.post_link and not campaign_content.message_id:
-            logger.debug(f'[render_campaign: sending post link message]-[campaign_content: {campaign_content.id}]-[user_id: {user.user_id}]')
-            try:
-                from .functions import retrieve_message_info
-                chat_id, message_id = retrieve_message_info(campaign_content.post_link)
-                res = agent.forward_message(
-                    chat_id=mother_channel,
-                    from_chat_id=chat_id,
-                    message_id=message_id,
-                    disable_web_page_preview=True
-                )
-                campaign_content.message_id = res['message_id']
-                campaign_content.save()
-            except Exception as e:
-                logger.error(
-                    f'[render_campaign: sending post link message failed]-[campaign_content: {campaign_content.id}]-[user_id: {user.user_id}][exc: {e}]'
-                )
-                continue
+        if campaign_content.view_type == campaign_content.TYPE_VIEW_TOTAL:
+            banner_id = campaign_content.message_id
+            campaign_file = None
+            short_links_ids = []
+        else:
+            banner_id, short_links_ids, campaign_file = render_campaign_content(
+                campaign_content,
+                user,
+                mother_channel,
+                campaign_user.id
+            )
 
-        banner_id, short_links_ids, campaign_file = render_campaign_content(
-            campaign_content,
-            user,
-            mother_channel,
-            campaign_user.id
-        )
         campaign_post = CampaignPost.objects.create(
             campaign_content=campaign_content,
             campaign_user=campaign_user,
@@ -717,9 +707,10 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
             ).update(
                 campaign_post=campaign_post
             )
-        if campaign_content.view_type == campaign_content.TYPE_VIEW_TOTAL and not campaign_content.message_id:
-            campaign_content.message_id = banner_id
-            campaign_content.save(update_fields=['updated_time', 'message_id'])
+
+        # if campaign_content.view_type == campaign_content.TYPE_VIEW_TOTAL and not campaign_content.message_id:
+        #     campaign_content.message_id = banner_id
+        #     campaign_content.save(update_fields=['updated_time', 'message_id'])
 
     if campaign_posts:
         # create message that define for CRM which channels got this campaign
@@ -728,8 +719,8 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
             campaign_push.campaign,
             campaign_push.publishers.filter(id__in=channels)
         )
-     
-        logger.debug(f'[render_campaign: sending system message]-[chat_id: {campaign_post.campaign_content.mother_channel.get_id_or_tag}]')
+
+        logger.debug(f'[render_campaign: sending system message]-[chat_id: {mother_channel.get_id_or_tag}]')
         agent.send_message(
             chat_id=mother_channel,
             text=system_message
@@ -737,15 +728,18 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
 
         # forward banners and send system message to user
         for campaign_post in campaign_posts:
-            logger.debug(f'[render_campaign: forwarding campaign post to user]-[campaign_post: {campaign_post.id}]-[user: {user.user_id}]')
+            logger.debug(
+                f'[render_campaign: forwarding campaign post to user]-[campaign_post: {campaign_post.id}]-[user: {user.user_id}]')
             agent.forward_message(
                 chat_id=user.user_id,
                 message_id=campaign_post.message_id,
                 from_chat_id=campaign_post.campaign_content.mother_channel.get_id_or_tag
             )
+
         logger.debug(f'[render_campaign: sending user message]-[chat_id: {user.user_id}]')
         agent.send_message(chat_id=user.user_id, text=user_message)
         campaign_user.channels.set(campaign_push.publishers.filter(id__in=channels))
+
         # update campaign push status
         logger.debug(f'[render_campaign: setting campaign push user status]-[campaign_push_user: {campaign_push_user.id}]')
         campaign_push_user.status = CampaignPushUser.STATUS_RECEIVED
