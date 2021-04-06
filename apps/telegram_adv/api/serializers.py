@@ -93,7 +93,7 @@ class CampaignContentSerializer(serializers.ModelSerializer):
             'id', 'display_text', 'content',
             'view_type', 'is_sticker', 'links',
             'campaign', 'inlines', 'files',
-            'mother_channel', 'post_link'
+            'mother_channel', 'post_link', 'message_id'
         )
         read_only_fields = ('id',)
         extra_kwargs = {
@@ -106,6 +106,7 @@ class CampaignContentSerializer(serializers.ModelSerializer):
         is_sticker = attrs.get('is_sticker', False)
         post_link = attrs.get('post_link')
         view_type = attrs.get('view_type')
+        message_id = attrs.get('message_id')
         mother_channel = attrs.get('mother_channel')
 
         if not any([is_sticker, content, post_link]):
@@ -114,6 +115,9 @@ class CampaignContentSerializer(serializers.ModelSerializer):
         elif post_link:  # post is already exists in it's channel then nothing is needed user should forward himself
             if view_type == CampaignContent.TYPE_VIEW_PARTIAL:
                 raise ParseError(_('content with post link only can be total view type'))
+            if content is None and message_id is None:
+                raise ParseError(_('one of content or message_id should be filled'))
+
             attrs.pop('inlines', None)
             attrs.pop('links', None)
             attrs.pop('content', None)
