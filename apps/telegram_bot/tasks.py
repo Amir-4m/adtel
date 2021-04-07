@@ -720,7 +720,7 @@ def render_campaign(campaign_push_user, user_id, channels, tariff):
             campaign_push.publishers.filter(id__in=channels)
         )
 
-        logger.debug(f'[render_campaign: sending system message]-[chat_id: {mother_channel.get_id_or_tag}]')
+        logger.debug(f'[render_campaign: sending system message]-[chat_id: {mother_channel}]')
         agent.send_message(
             chat_id=mother_channel,
             text=system_message
