@@ -21,7 +21,7 @@ def get_campaign_publisher_views(campaign_id):
             'campaignpost_set__logs'
     ).filter(
         campaign_id=campaign_id,
-        view_type=CampaignContent.TYPE_VIEW_PARTIAL
+        # view_type=CampaignContent.TYPE_VIEW_PARTIAL
     ).order_by(
         'id'
     ):
