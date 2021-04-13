@@ -48,12 +48,15 @@ def get_campaign_publisher_views(campaign_id):
         hourly = qs.values('created_time__hour', 'campaign_post').annotate(total_view=Max('banner_views'))
         for _h in hourly:
             hourly_views.setdefault(_h['created_time__hour'], 0)
-            hourly_views[_h['created_time__hour']] += _h['total_view']
+            if content.view_type == CampaignContent.TYPE_VIEW_TOTAL:
+                hourly_views[_h['created_time__hour']] = max(_h['total_view'], hourly_views[_h['created_time__hour']])
+            else:
+                hourly_views[_h['created_time__hour']] += _h['total_view']
 
         report.append(
             {
                 'content': content.id,
-                'views': post_views,
+                'views': int(post_views),
                 'hourly': hourly_views,
                 'detail': CampaignUserSerializer(
                     CampaignUser.objects.filter(id__in=qs.values_list('campaign_post__campaign_user__id', flat=True)), many=True).data
