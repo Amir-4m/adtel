@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db.models import Sum, Case, When, Max, F
+from django.db.models import Sum, Case, When, Max, F, Avg
 from django.db.models.functions import Coalesce
 from rest_framework import status
 
@@ -37,7 +37,12 @@ def get_campaign_publisher_views(campaign_id):
         # )['views']
         qs = CampaignPostLog.objects.filter(campaign_post__is_enable=True, campaign_post__campaign_content=content)
 
-        views = qs.values('campaign_post').annotate(post_views=Max('banner_views')).aggregate(views=Coalesce(Sum('post_views'), 0))['views']
+        views = qs.values('campaign_post').annotate(post_views=Max('banner_views'))
+
+        if content.view_type == CampaignContent.TYPE_VIEW_TOTAL:
+            post_views = views.aggregate(views=Coalesce(Avg('post_views'), 0))['views']
+        else:
+            post_views = views.aggregate(views=Coalesce(Sum('post_views'), 0))['views']
 
         hourly_views = {}
         hourly = qs.values('created_time__hour', 'campaign_post').annotate(total_view=Max('banner_views'))
@@ -48,7 +53,7 @@ def get_campaign_publisher_views(campaign_id):
         report.append(
             {
                 'content': content.id,
-                'views': views,
+                'views': post_views,
                 'hourly': hourly_views,
                 'detail': CampaignUserSerializer(
                     CampaignUser.objects.filter(id__in=qs.values_list('campaign_post__campaign_user__id', flat=True)), many=True).data
